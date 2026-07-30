@@ -20,6 +20,7 @@
     --line:rgba(15,31,61,0.12);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
   body{
     font-family:'IBM Plex Sans',sans-serif;
     color:var(--char);
@@ -38,6 +39,7 @@
   .sidebar{background:var(--ink);color:var(--paper);padding:24px 16px;display:flex;flex-direction:column;}
   .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:17px;padding:6px 10px 26px;}
   .brand-mark{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 200deg, var(--teal), var(--gold), var(--ink) 80%);flex-shrink:0;}
+  .sidebar-close{display:none;}
   .nav-group-label{
     font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;
     letter-spacing:0.08em;color:rgba(247,245,240,0.35);padding:16px 12px 8px;
@@ -61,15 +63,20 @@
   .chapter-name{font-size:12.5px;font-weight:500;color:var(--paper);}
   .chapter-role{font-size:11px;color:rgba(247,245,240,0.45);}
 
+  /* ===== MOBILE NAV CONTROLS (hidden on desktop) ===== */
+  .menu-toggle, .sidebar-backdrop{display:none;}
+
   /* ===== MAIN ===== */
-  .main{overflow-y:auto;background:#fff;}
+  .main{overflow-y:auto;background:#fff;-webkit-overflow-scrolling:touch;}
   .topbar{
     display:flex;align-items:center;justify-content:space-between;
     padding:20px 36px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5;
+    gap:12px;
   }
-  .topbar h4{font-size:13px;color:#8a8a8a;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;font-family:'IBM Plex Mono',monospace;}
+  .topbar-left{display:flex;align-items:center;gap:12px;min-width:0;}
+  .topbar h4{font-size:13px;color:#8a8a8a;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;font-family:'IBM Plex Mono',monospace;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
   .topbar-actions{display:flex;gap:10px;align-items:center;}
-  .btn{padding:8px 15px;border-radius:5px;font-size:13px;font-weight:500;}
+  .btn{padding:8px 15px;border-radius:5px;font-size:13px;font-weight:500;white-space:nowrap;}
   .btn-gold{background:var(--gold);color:var(--ink);}
   .btn-ghost{border:1px solid var(--line);color:var(--ink);}
   .view{padding:36px;display:none;}
@@ -104,7 +111,7 @@
     display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:6px;
     padding:11px 14px;margin-bottom:20px;
   }
-  .kb-search input{border:none;outline:none;font-size:14px;flex:1;font-family:inherit;}
+  .kb-search input{border:none;outline:none;font-size:14px;flex:1;font-family:inherit;min-width:0;}
   .filter-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
   .filter-chip{
     padding:6px 13px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;color:#5a5a5a;
@@ -121,11 +128,12 @@
   .kb-card.hidden{display:none;}
 
   /* ===== CALENDAR ===== */
-  .cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
   .cal-nav{display:flex;gap:6px;align-items:center;}
   .cal-nav button{width:30px;height:30px;border:1px solid var(--line);border-radius:5px;font-size:15px;}
   .cal-month{font-family:'Fraunces',serif;font-size:17px;margin:0 8px;}
-  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .cal-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;min-width:560px;}
   .cal-dow{background:var(--paper-dim);text-align:center;font-size:11px;color:#8a8a8a;padding:8px 0;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;border-bottom:1px solid var(--line);}
   .cal-cell{
     min-height:78px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
@@ -138,7 +146,7 @@
     padding:2px 5px;border-radius:3px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
   }
   .cal-event.gold{background:rgba(201,147,46,0.12);color:#96701f;}
-  .legend{display:flex;gap:18px;margin-top:16px;}
+  .legend{display:flex;gap:18px;margin-top:16px;flex-wrap:wrap;}
   .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5a5a5a;}
   .legend-dot{width:8px;height:8px;border-radius:2px;}
 
@@ -167,9 +175,9 @@
 
   /* ===== CONTACTS ===== */
   .contact-list{display:flex;flex-direction:column;gap:2px;}
-  .contact-row{display:flex;align-items:center;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);}
+  .contact-row{display:flex;align-items:center;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
   .contact-row .contact-avatar{width:42px;height:42px;font-size:14px;}
-  .contact-row .info{flex:1;}
+  .contact-row .info{flex:1;min-width:160px;}
   .contact-row .info b{font-size:14px;display:block;color:var(--ink);}
   .contact-row .info span{font-size:12.5px;color:#8a8a8a;}
   .contact-row .topic{font-size:12px;background:var(--paper-dim);padding:4px 10px;border-radius:20px;color:#6a6a6a;}
@@ -188,19 +196,83 @@
     display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:6px;
     padding:10px 14px;margin-bottom:18px;
   }
-  .contact-search input{border:none;outline:none;font-size:13.5px;flex:1;font-family:inherit;}
+  .contact-search input{border:none;outline:none;font-size:13.5px;flex:1;font-family:inherit;min-width:0;}
 
+  /* =======================================================
+     RESPONSIVE / MOBILE
+     ======================================================= */
   @media (max-width:900px){
-    .app-shell{grid-template-columns:1fr;}
-    .sidebar{display:none;}
-    .stat-row, .panel-row, .kb-grid, .training-grid, .handover-layout{grid-template-columns:1fr;}
+    body{overflow:auto;height:auto;min-height:100vh;}
+    .app-shell{grid-template-columns:1fr;height:auto;min-height:100vh;}
+
+    /* Sidebar becomes a slide-in drawer instead of disappearing */
+    .sidebar{
+      position:fixed;top:0;left:0;height:100vh;width:250px;max-width:80vw;
+      z-index:40;transform:translateX(-100%);transition:transform .22s ease;
+      box-shadow:12px 0 32px -12px rgba(0,0,0,0.35);
+    }
+    .sidebar.open{transform:translateX(0);}
+    .sidebar-close{
+      display:flex;align-items:center;justify-content:center;
+      position:absolute;top:18px;right:14px;width:30px;height:30px;
+      border-radius:6px;color:rgba(247,245,240,0.7);
+    }
+    .sidebar-close:hover{background:rgba(247,245,240,0.08);}
+
+    .sidebar-backdrop{
+      display:none;position:fixed;inset:0;background:rgba(15,31,61,0.45);z-index:35;
+    }
+    .sidebar-backdrop.open{display:block;}
+
+    /* Hamburger button shown in the topbar */
+    .menu-toggle{
+      display:flex;align-items:center;justify-content:center;
+      width:36px;height:36px;border-radius:6px;border:1px solid var(--line);flex-shrink:0;
+    }
+    .menu-toggle:hover{background:var(--paper-dim);}
+
+    .topbar{padding:16px 18px;}
+    .topbar h4{font-size:11.5px;}
+    .topbar-actions .btn{padding:8px 11px;font-size:12.5px;}
+    .topbar-actions .btn span.full-label{display:none;}
+
+    .view{padding:20px 18px 40px;}
+    .view-head h2{font-size:21px;}
+    .view-head p{font-size:13px;}
+
+    .stat-row{grid-template-columns:repeat(2,1fr);gap:10px;}
+    .panel-row, .kb-grid, .training-grid, .handover-layout{grid-template-columns:1fr;}
+    .handover-layout{gap:0;}
+    .toc{
+      border-right:none;padding-right:0;border-bottom:1px solid var(--line);
+      display:flex;overflow-x:auto;gap:4px;padding-bottom:10px;margin-bottom:20px;
+      -webkit-overflow-scrolling:touch;
+    }
+    .toc-item{white-space:nowrap;}
+
+    .cal-toolbar{align-items:flex-start;}
+    .contact-row{padding:14px 2px;}
+    .contact-row .topic{order:3;margin-left:58px;}
+  }
+
+  @media (max-width:520px){
+    .stat-row{grid-template-columns:1fr 1fr;}
+    .stat-box{padding:14px 16px;}
+    .stat-box .num{font-size:24px;}
+    .topbar-actions{gap:6px;}
+    .btn{padding:8px 10px;font-size:12px;}
+    .view-head h2{font-size:19px;}
   }
 </style>
 </head>
 <body>
 
 <div class="app-shell">
-  <aside class="sidebar">
+  <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+  <aside class="sidebar" id="sidebar">
+    <button class="sidebar-close" id="sidebarClose" aria-label="Close menu">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+    </button>
     <div class="brand"><span class="brand-mark"></span>ChapterLink</div>
 
     <div class="nav-group-label">Overview</div>
@@ -248,10 +320,15 @@
 
   <main class="main">
     <div class="topbar">
-      <h4 id="topbarLabel">Dashboard</h4>
+      <div class="topbar-left">
+        <button class="menu-toggle" id="menuToggle" aria-label="Open menu">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+        </button>
+        <h4 id="topbarLabel">Dashboard</h4>
+      </div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost">Chapter Settings</button>
-        <button class="btn btn-gold">+ Submit a Solution</button>
+        <button class="btn btn-ghost"><span class="full-label">Chapter </span>Settings</button>
+        <button class="btn btn-gold">+ <span class="full-label">Submit a </span>Solution</button>
       </div>
     </div>
 
@@ -358,6 +435,7 @@
         </div>
         <button class="btn btn-ghost">+ Add Event</button>
       </div>
+      <div class="cal-scroll">
       <div class="cal-grid">
         <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
         <div class="cal-cell"><div class="dnum">27</div></div>
@@ -395,6 +473,7 @@
         <div class="cal-cell"><div class="dnum">29</div></div>
         <div class="cal-cell"><div class="dnum">30</div></div>
         <div class="cal-cell"><div class="dnum">31</div></div>
+      </div>
       </div>
       <div class="legend">
         <div class="legend-item"><span class="legend-dot" style="background:var(--teal);"></span>Chapter events</div>
@@ -556,6 +635,10 @@
   const navItems = document.querySelectorAll('.nav-item');
   const views = document.querySelectorAll('.view');
   const topbarLabel = document.getElementById('topbarLabel');
+  const sidebar = document.getElementById('sidebar');
+  const sidebarBackdrop = document.getElementById('sidebarBackdrop');
+  const menuToggle = document.getElementById('menuToggle');
+  const sidebarClose = document.getElementById('sidebarClose');
   const labels = {
     dashboard: 'Dashboard',
     kb: 'Knowledge Base',
@@ -565,6 +648,18 @@
     contacts: 'Find a Contact'
   };
 
+  function openSidebar(){
+    sidebar.classList.add('open');
+    sidebarBackdrop.classList.add('open');
+  }
+  function closeSidebar(){
+    sidebar.classList.remove('open');
+    sidebarBackdrop.classList.remove('open');
+  }
+  menuToggle.addEventListener('click', openSidebar);
+  sidebarClose.addEventListener('click', closeSidebar);
+  sidebarBackdrop.addEventListener('click', closeSidebar);
+
   navItems.forEach(item => {
     item.addEventListener('click', () => {
       navItems.forEach(i => i.classList.remove('active'));
@@ -573,6 +668,8 @@
       const target = document.getElementById('view-' + item.dataset.view);
       if(target) target.classList.add('active');
       topbarLabel.textContent = labels[item.dataset.view];
+      closeSidebar();
+      document.querySelector('.main').scrollTo(0,0);
     });
   });
 
@@ -614,7 +711,13 @@
       item.classList.add('active');
     });
   });
+
+  // Close drawer automatically if resized back to desktop width
+  window.addEventListener('resize', () => {
+    if(window.innerWidth > 900) closeSidebar();
+  });
 </script>
 
 </body>
 </html>
+
