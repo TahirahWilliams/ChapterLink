@@ -1,0 +1,620 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ChapterLink</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,600;9..144,700&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0F1F3D;
+    --ink-soft:#16294f;
+    --gold:#C9932E;
+    --gold-bright:#E0AC4D;
+    --teal:#1B7A72;
+    --teal-bg:rgba(27,122,114,0.08);
+    --paper:#F7F5F0;
+    --paper-dim:#EEEAE1;
+    --char:#1A1A1A;
+    --line:rgba(15,31,61,0.12);
+  }
+  *{margin:0;padding:0;box-sizing:border-box;}
+  body{
+    font-family:'IBM Plex Sans',sans-serif;
+    color:var(--char);
+    background:var(--paper-dim);
+    -webkit-font-smoothing:antialiased;
+    height:100vh;
+    overflow:hidden;
+  }
+  h1,h2,h3,h4,.display{font-family:'Fraunces',serif;font-weight:600;letter-spacing:-0.01em;color:var(--ink);}
+  .mono{font-family:'IBM Plex Mono',monospace;}
+  button{font-family:inherit;cursor:pointer;border:none;background:none;}
+
+  .app-shell{display:grid;grid-template-columns:236px 1fr;height:100vh;}
+
+  /* ===== SIDEBAR ===== */
+  .sidebar{background:var(--ink);color:var(--paper);padding:24px 16px;display:flex;flex-direction:column;}
+  .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:17px;padding:6px 10px 26px;}
+  .brand-mark{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 200deg, var(--teal), var(--gold), var(--ink) 80%);flex-shrink:0;}
+  .nav-group-label{
+    font-family:'IBM Plex Mono',monospace;font-size:10.5px;text-transform:uppercase;
+    letter-spacing:0.08em;color:rgba(247,245,240,0.35);padding:16px 12px 8px;
+  }
+  .nav-item{
+    display:flex;align-items:center;gap:11px;width:100%;text-align:left;
+    padding:10px 12px;border-radius:6px;font-size:13.8px;color:rgba(247,245,240,0.72);
+    margin-bottom:2px;transition:background .12s, color .12s;
+  }
+  .nav-item svg{width:16px;height:16px;flex-shrink:0;opacity:0.8;}
+  .nav-item:hover{background:rgba(247,245,240,0.06);color:var(--paper);}
+  .nav-item.active{background:rgba(247,245,240,0.12);color:var(--paper);font-weight:500;}
+  .nav-item.active svg{opacity:1;}
+  .sidebar-footer{margin-top:auto;padding:14px 12px;border-top:1px solid rgba(247,245,240,0.1);}
+  .chapter-chip{display:flex;align-items:center;gap:10px;}
+  .chapter-avatar{
+    width:30px;height:30px;border-radius:50%;background:var(--gold);
+    display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;
+    font-weight:600;font-size:13px;color:var(--ink);flex-shrink:0;
+  }
+  .chapter-name{font-size:12.5px;font-weight:500;color:var(--paper);}
+  .chapter-role{font-size:11px;color:rgba(247,245,240,0.45);}
+
+  /* ===== MAIN ===== */
+  .main{overflow-y:auto;background:#fff;}
+  .topbar{
+    display:flex;align-items:center;justify-content:space-between;
+    padding:20px 36px;border-bottom:1px solid var(--line);position:sticky;top:0;background:#fff;z-index:5;
+  }
+  .topbar h4{font-size:13px;color:#8a8a8a;font-weight:500;text-transform:uppercase;letter-spacing:0.05em;font-family:'IBM Plex Mono',monospace;}
+  .topbar-actions{display:flex;gap:10px;align-items:center;}
+  .btn{padding:8px 15px;border-radius:5px;font-size:13px;font-weight:500;}
+  .btn-gold{background:var(--gold);color:var(--ink);}
+  .btn-ghost{border:1px solid var(--line);color:var(--ink);}
+  .view{padding:36px;display:none;}
+  .view.active{display:block;animation:fadeIn .25s ease;}
+  @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
+
+  .view-head{margin-bottom:28px;}
+  .view-head h2{font-size:26px;margin-bottom:6px;}
+  .view-head p{color:#7a7a7a;font-size:14px;}
+
+  /* ===== DASHBOARD ===== */
+  .stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:32px;}
+  .stat-box{border:1px solid var(--line);border-radius:8px;padding:18px 20px;}
+  .stat-box .num{font-family:'Fraunces',serif;font-size:28px;color:var(--gold);}
+  .stat-box .lbl{font-size:12px;color:#8a8a8a;margin-top:4px;}
+  .panel-row{display:grid;grid-template-columns:1.3fr 1fr;gap:20px;}
+  .panel{border:1px solid var(--line);border-radius:8px;padding:22px;}
+  .panel h3{font-size:16px;margin-bottom:16px;}
+  .feed-item{display:flex;gap:12px;padding:12px 0;border-bottom:1px solid var(--line);}
+  .feed-item:last-child{border-bottom:none;}
+  .feed-dot{width:7px;height:7px;border-radius:50%;background:var(--teal);margin-top:6px;flex-shrink:0;}
+  .feed-text{font-size:13.5px;}
+  .feed-text b{font-weight:600;}
+  .feed-time{font-size:11.5px;color:#a8a8a8;margin-top:2px;}
+  .contact-card{display:flex;align-items:center;gap:12px;padding:14px;background:var(--teal-bg);border-radius:6px;}
+  .contact-avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:13px;font-family:'Fraunces',serif;}
+  .contact-name{font-size:13.5px;font-weight:600;}
+  .contact-role{font-size:11.5px;color:#5a5a5a;}
+
+  /* ===== KNOWLEDGE BASE ===== */
+  .kb-search{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:6px;
+    padding:11px 14px;margin-bottom:20px;
+  }
+  .kb-search input{border:none;outline:none;font-size:14px;flex:1;font-family:inherit;}
+  .filter-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap;}
+  .filter-chip{
+    padding:6px 13px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;color:#5a5a5a;
+    transition:all .12s;
+  }
+  .filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
+  .kb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  .kb-card{border:1px solid var(--line);border-radius:8px;padding:18px 20px;transition:box-shadow .15s;}
+  .kb-card:hover{box-shadow:0 8px 24px -12px rgba(15,31,61,0.2);}
+  .kb-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--teal);background:var(--teal-bg);padding:3px 8px;border-radius:3px;margin-bottom:10px;}
+  .kb-card h5{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .kb-card p{font-size:13px;color:#7a7a7a;margin-bottom:10px;}
+  .kb-meta{font-size:11px;color:#a8a8a8;font-family:'IBM Plex Mono',monospace;}
+  .kb-card.hidden{display:none;}
+
+  /* ===== CALENDAR ===== */
+  .cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+  .cal-nav{display:flex;gap:6px;align-items:center;}
+  .cal-nav button{width:30px;height:30px;border:1px solid var(--line);border-radius:5px;font-size:15px;}
+  .cal-month{font-family:'Fraunces',serif;font-size:17px;margin:0 8px;}
+  .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;}
+  .cal-dow{background:var(--paper-dim);text-align:center;font-size:11px;color:#8a8a8a;padding:8px 0;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;border-bottom:1px solid var(--line);}
+  .cal-cell{
+    min-height:78px;border-right:1px solid var(--line);border-bottom:1px solid var(--line);
+    padding:6px 8px;font-size:12px;color:#b8b8b8;position:relative;
+  }
+  .cal-cell.today{background:rgba(201,147,46,0.06);}
+  .cal-cell .dnum{font-size:12px;color:#8a8a8a;}
+  .cal-event{
+    margin-top:4px;font-size:10.5px;background:var(--teal-bg);color:var(--teal);
+    padding:2px 5px;border-radius:3px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+  }
+  .cal-event.gold{background:rgba(201,147,46,0.12);color:#96701f;}
+  .legend{display:flex;gap:18px;margin-top:16px;}
+  .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5a5a5a;}
+  .legend-dot{width:8px;height:8px;border-radius:2px;}
+
+  /* ===== HANDOVER ===== */
+  .handover-layout{display:grid;grid-template-columns:220px 1fr;gap:24px;}
+  .toc{border-right:1px solid var(--line);padding-right:20px;}
+  .toc-item{padding:9px 10px;font-size:13px;border-radius:5px;color:#6a6a6a;margin-bottom:2px;}
+  .toc-item.active{background:var(--paper-dim);color:var(--ink);font-weight:600;}
+  .form-block{margin-bottom:26px;}
+  .form-block label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:6px;}
+  .form-block .hint{font-size:12px;color:#9a9a9a;margin-bottom:8px;}
+  .form-block textarea, .form-block input{
+    width:100%;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:inherit;font-size:13.5px;resize:vertical;
+  }
+  .form-block textarea{min-height:70px;}
+
+  /* ===== TRAINING ===== */
+  .training-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+  .training-card{border:1px solid var(--line);border-radius:8px;padding:20px;}
+  .training-month{font-family:'IBM Plex Mono',monospace;font-size:11px;color:var(--gold);text-transform:uppercase;margin-bottom:10px;}
+  .training-card h5{font-size:15.5px;margin-bottom:8px;color:var(--ink);font-weight:600;}
+  .training-card p{font-size:13px;color:#7a7a7a;margin-bottom:14px;}
+  .training-status{font-size:11.5px;padding:4px 10px;border-radius:20px;display:inline-block;}
+  .training-status.done{background:var(--teal-bg);color:var(--teal);}
+  .training-status.upcoming{background:var(--paper-dim);color:#8a8a8a;}
+
+  /* ===== CONTACTS ===== */
+  .contact-list{display:flex;flex-direction:column;gap:2px;}
+  .contact-row{display:flex;align-items:center;gap:16px;padding:16px 4px;border-bottom:1px solid var(--line);}
+  .contact-row .contact-avatar{width:42px;height:42px;font-size:14px;}
+  .contact-row .info{flex:1;}
+  .contact-row .info b{font-size:14px;display:block;color:var(--ink);}
+  .contact-row .info span{font-size:12.5px;color:#8a8a8a;}
+  .contact-row .topic{font-size:12px;background:var(--paper-dim);padding:4px 10px;border-radius:20px;color:#6a6a6a;}
+
+  .contact-tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .contact-tab{
+    padding:11px 4px;margin-right:22px;font-size:13.5px;color:#8a8a8a;font-weight:500;
+    border-bottom:2px solid transparent;position:relative;top:1px;
+  }
+  .contact-tab.active{color:var(--ink);border-bottom-color:var(--gold);}
+  .contact-panel{display:none;}
+  .contact-panel.active{display:block;}
+  .contact-row.leader .contact-avatar{background:var(--gold);color:var(--ink);}
+  .contact-row .chapter-line{font-size:11.5px;color:var(--teal);font-weight:500;margin-top:1px;display:block;}
+  .contact-search{
+    display:flex;align-items:center;gap:10px;border:1px solid var(--line);border-radius:6px;
+    padding:10px 14px;margin-bottom:18px;
+  }
+  .contact-search input{border:none;outline:none;font-size:13.5px;flex:1;font-family:inherit;}
+
+  @media (max-width:900px){
+    .app-shell{grid-template-columns:1fr;}
+    .sidebar{display:none;}
+    .stat-row, .panel-row, .kb-grid, .training-grid, .handover-layout{grid-template-columns:1fr;}
+  }
+</style>
+</head>
+<body>
+
+<div class="app-shell">
+  <aside class="sidebar">
+    <div class="brand"><span class="brand-mark"></span>ChapterLink</div>
+
+    <div class="nav-group-label">Overview</div>
+    <button class="nav-item active" data-view="dashboard">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
+      Dashboard
+    </button>
+
+    <div class="nav-group-label">Chapter Support</div>
+    <button class="nav-item" data-view="kb">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+      Knowledge Base
+    </button>
+    <button class="nav-item" data-view="contacts">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+      Find a Contact
+    </button>
+
+    <div class="nav-group-label">Connection</div>
+    <button class="nav-item" data-view="calendar">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+      Cross-Chapter Calendar
+    </button>
+
+    <div class="nav-group-label">Continuity</div>
+    <button class="nav-item" data-view="handover">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><path d="M14 2v6h6"/></svg>
+      Handover Templates
+    </button>
+    <button class="nav-item" data-view="training">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 10v6M2 10l10-5 10 5-10 5-10-5z"/><path d="M6 12v5c0 1.66 2.69 3 6 3s6-1.34 6-3v-5"/></svg>
+      Leadership Training
+    </button>
+
+    <div class="sidebar-footer">
+      <div class="chapter-chip">
+        <div class="chapter-avatar">CS</div>
+        <div>
+          <div class="chapter-name">Clark State Chapter</div>
+          <div class="chapter-role">Chapter President</div>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+    <div class="topbar">
+      <h4 id="topbarLabel">Dashboard</h4>
+      <div class="topbar-actions">
+        <button class="btn btn-ghost">Chapter Settings</button>
+        <button class="btn btn-gold">+ Submit a Solution</button>
+      </div>
+    </div>
+
+    <!-- DASHBOARD -->
+    <section class="view active" id="view-dashboard">
+      <div class="view-head">
+        <h2>Welcome back, Clark State.</h2>
+        <p>Here's what's happening across the network this week.</p>
+      </div>
+      <div class="stat-row">
+        <div class="stat-box"><div class="num">62</div><div class="lbl">Connected chapters</div></div>
+        <div class="stat-box"><div class="num">184</div><div class="lbl">Knowledge base entries</div></div>
+        <div class="stat-box"><div class="num">9</div><div class="lbl">Joint events this month</div></div>
+        <div class="stat-box"><div class="num">100%</div><div class="lbl">Handovers completed, spring cohort</div></div>
+      </div>
+      <div class="panel-row">
+        <div class="panel">
+          <h3>Network Activity</h3>
+          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Prairie View A&amp;M</b> posted a solution on sponsor outreach templates.</div><div class="feed-time">2 hours ago</div></div></div>
+          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Howard University</b> invited nearby chapters to a joint networking night, Oct 14.</div><div class="feed-time">Yesterday</div></div></div>
+          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Xavier University</b> completed their spring leadership handover.</div><div class="feed-time">3 days ago</div></div></div>
+          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Morgan State</b> chapter chartering was approved — first post-approval milestone.</div><div class="feed-time">5 days ago</div></div></div>
+        </div>
+        <div class="panel">
+          <h3>Your Point of Contact</h3>
+          <div class="contact-card">
+            <div class="contact-avatar">MJ</div>
+            <div>
+              <div class="contact-name">Maya Johnson</div>
+              <div class="contact-role">Regional Support Lead, Southeast</div>
+            </div>
+          </div>
+          <p style="font-size:12.5px;color:#8a8a8a;margin-top:14px;">Reach out any time — response within 48 hours.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- KNOWLEDGE BASE -->
+    <section class="view" id="view-kb">
+      <div class="view-head">
+        <h2>Knowledge Base</h2>
+        <p>Solutions submitted by chapters who've faced this before.</p>
+      </div>
+      <div class="kb-search">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+        <input id="kbSearchInput" type="text" placeholder="Search by problem — e.g. 'low turnout', 'sponsor outreach'...">
+      </div>
+      <div class="filter-row">
+        <button class="filter-chip active" data-filter="all">All</button>
+        <button class="filter-chip" data-filter="chartering">Chartering</button>
+        <button class="filter-chip" data-filter="programming">Programming</button>
+        <button class="filter-chip" data-filter="funding">Funding</button>
+        <button class="filter-chip" data-filter="handover">Handover</button>
+      </div>
+      <div class="kb-grid" id="kbGrid">
+        <div class="kb-card" data-cat="programming" data-text="reviving stalled monthly meetings attendance">
+          <span class="kb-tag">Programming</span>
+          <h5>Reviving stalled monthly meetings</h5>
+          <p>How a 12-member chapter rebuilt attendance using co-hosted events with a neighboring chapter.</p>
+          <div class="kb-meta">Chapter #114 · Submitted 2024</div>
+        </div>
+        <div class="kb-card" data-cat="chartering" data-text="getting school approval one semester chartering">
+          <span class="kb-tag">Chartering</span>
+          <h5>Getting school approval in one semester</h5>
+          <p>The exact step order that avoided the usual back-and-forth with student affairs offices.</p>
+          <div class="kb-meta">Chapter #203 · Submitted 2023</div>
+        </div>
+        <div class="kb-card" data-cat="funding" data-text="sponsor outreach templates funding money">
+          <span class="kb-tag">Funding</span>
+          <h5>Sponsor outreach templates that worked</h5>
+          <p>Email and pitch deck templates that produced a 40% response rate from local companies.</p>
+          <div class="kb-meta">Chapter #087 · Submitted 2025</div>
+        </div>
+        <div class="kb-card" data-cat="handover" data-text="one page transition brief handover leadership">
+          <span class="kb-tag">Handover</span>
+          <h5>A one-page transition brief format</h5>
+          <p>What five outgoing presidents wished they'd written down before graduating.</p>
+          <div class="kb-meta">Chapter #142 · Submitted 2024</div>
+        </div>
+        <div class="kb-card" data-cat="programming" data-text="joint events partnership new chapter networking">
+          <span class="kb-tag">Programming</span>
+          <h5>Running a joint event with a bigger chapter</h5>
+          <p>A first-year chapter's approach to co-hosting a networking night with an established one.</p>
+          <div class="kb-meta">Chapter #061 · Submitted 2023</div>
+        </div>
+        <div class="kb-card" data-cat="funding" data-text="budget planning small chapter low funds">
+          <span class="kb-tag">Funding</span>
+          <h5>Running programming on a $200 annual budget</h5>
+          <p>How a newly chartered chapter prioritized spend in its first year.</p>
+          <div class="kb-meta">Chapter #199 · Submitted 2025</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- CALENDAR -->
+    <section class="view" id="view-calendar">
+      <div class="view-head">
+        <h2>Cross-Chapter Calendar</h2>
+        <p>See what other chapters are planning, and coordinate instead of overlapping.</p>
+      </div>
+      <div class="cal-toolbar">
+        <div class="cal-nav">
+          <button>‹</button><span class="cal-month">October 2026</span><button>›</button>
+        </div>
+        <button class="btn btn-ghost">+ Add Event</button>
+      </div>
+      <div class="cal-grid">
+        <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
+        <div class="cal-cell"><div class="dnum">27</div></div>
+        <div class="cal-cell"><div class="dnum">28</div></div>
+        <div class="cal-cell"><div class="dnum">29</div></div>
+        <div class="cal-cell"><div class="dnum">30</div></div>
+        <div class="cal-cell"><div class="dnum">1</div><div class="cal-event">GA Tech · Info Night</div></div>
+        <div class="cal-cell"><div class="dnum">2</div></div>
+        <div class="cal-cell"><div class="dnum">3</div></div>
+        <div class="cal-cell"><div class="dnum">4</div></div>
+        <div class="cal-cell"><div class="dnum">5</div></div>
+        <div class="cal-cell"><div class="dnum">6</div></div>
+        <div class="cal-cell"><div class="dnum">7</div><div class="cal-event gold">Leadership Training</div></div>
+        <div class="cal-cell"><div class="dnum">8</div></div>
+        <div class="cal-cell"><div class="dnum">9</div></div>
+        <div class="cal-cell"><div class="dnum">10</div></div>
+        <div class="cal-cell"><div class="dnum">11</div></div>
+        <div class="cal-cell"><div class="dnum">12</div></div>
+        <div class="cal-cell"><div class="dnum">13</div></div>
+        <div class="cal-cell today"><div class="dnum">14</div><div class="cal-event">Howard · Networking Night</div></div>
+        <div class="cal-cell"><div class="dnum">15</div><div class="cal-event">FAMU · Sponsor Panel</div></div>
+        <div class="cal-cell"><div class="dnum">16</div></div>
+        <div class="cal-cell"><div class="dnum">17</div></div>
+        <div class="cal-cell"><div class="dnum">18</div></div>
+        <div class="cal-cell"><div class="dnum">19</div></div>
+        <div class="cal-cell"><div class="dnum">20</div></div>
+        <div class="cal-cell"><div class="dnum">21</div><div class="cal-event">Xavier · Joint Social</div></div>
+        <div class="cal-cell"><div class="dnum">22</div></div>
+        <div class="cal-cell"><div class="dnum">23</div></div>
+        <div class="cal-cell"><div class="dnum">24</div></div>
+        <div class="cal-cell"><div class="dnum">25</div></div>
+        <div class="cal-cell"><div class="dnum">26</div></div>
+        <div class="cal-cell"><div class="dnum">27</div></div>
+        <div class="cal-cell"><div class="dnum">28</div><div class="cal-event gold">Handover Deadline</div></div>
+        <div class="cal-cell"><div class="dnum">29</div></div>
+        <div class="cal-cell"><div class="dnum">30</div></div>
+        <div class="cal-cell"><div class="dnum">31</div></div>
+      </div>
+      <div class="legend">
+        <div class="legend-item"><span class="legend-dot" style="background:var(--teal);"></span>Chapter events</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--gold);"></span>ChapterLink milestones</div>
+      </div>
+    </section>
+
+    <!-- HANDOVER -->
+    <section class="view" id="view-handover">
+      <div class="view-head">
+        <h2>Leadership Handover Template</h2>
+        <p>What outgoing officers fill out before graduating — so the next leader doesn't start at zero.</p>
+      </div>
+      <div class="handover-layout">
+        <div class="toc">
+          <div class="toc-item active">Chapter Overview</div>
+          <div class="toc-item">Vendors &amp; Sponsors</div>
+          <div class="toc-item">Budget Summary</div>
+          <div class="toc-item">Login Credentials</div>
+          <div class="toc-item">What Made This Year Work</div>
+        </div>
+        <div>
+          <div class="form-block">
+            <label>What kept the chapter running this year?</label>
+            <div class="hint">Be specific — the thing that isn't written down anywhere else.</div>
+            <textarea placeholder="e.g. Monthly meetings worked best on Thursdays after 6pm because of lab schedules...">Monthly meetings worked best on Thursdays after 6pm, since most members had lab sections earlier that day. Co-hosting with the Chemistry Society doubled our turnout in the fall.</textarea>
+          </div>
+          <div class="form-block">
+            <label>Active vendors &amp; sponsors</label>
+            <textarea placeholder="Names, contacts, what they provided...">Print & Ship on 5th Ave — reliable, 3-day turnaround for banners. Contact: Dana R. (has worked with us 2 years). Regional sponsor: Genentech Local Outreach — annual $500 grant, apply by March 1.</textarea>
+          </div>
+          <div class="form-block">
+            <label>Budget summary</label>
+            <input type="text" value="$2,450 annual · 40% events, 30% travel to regional conf, 30% supplies">
+          </div>
+          <button class="btn btn-gold">Save &amp; Submit to Incoming President</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- TRAINING -->
+    <section class="view" id="view-training">
+      <div class="view-head">
+        <h2>Leadership Training</h2>
+        <p>Monthly sessions for incoming and current chapter officers.</p>
+      </div>
+      <div class="training-grid">
+        <div class="training-card">
+          <div class="training-month">September</div>
+          <h5>Running Your First Officer Meeting</h5>
+          <p>Setting agendas, delegating roles, and keeping momentum in month one.</p>
+          <span class="training-status done">Completed</span>
+        </div>
+        <div class="training-card">
+          <div class="training-month">October</div>
+          <h5>Sponsor &amp; Fundraising Basics</h5>
+          <p>How to approach local businesses and write a sponsorship ask that gets a reply.</p>
+          <span class="training-status upcoming">Oct 7 · Register</span>
+        </div>
+        <div class="training-card">
+          <div class="training-month">November</div>
+          <h5>Handling Officer Turnover Mid-Year</h5>
+          <p>What to do when an officer steps down before their handover is complete.</p>
+          <span class="training-status upcoming">Nov 4 · Register</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- CONTACTS -->
+    <section class="view" id="view-contacts">
+      <div class="view-head">
+        <h2>Find a Contact</h2>
+        <p>A named person for your chapter — not a general inbox.</p>
+      </div>
+
+      <div class="contact-tabs">
+        <button class="contact-tab active" data-panel="staff">NOBCChE Staff</button>
+        <button class="contact-tab" data-panel="leaders">Chapter Leaders</button>
+      </div>
+
+      <!-- STAFF PANEL -->
+      <div class="contact-panel active" id="panel-staff">
+        <div class="contact-list">
+          <div class="contact-row">
+            <div class="contact-avatar">MJ</div>
+            <div class="info"><b>Maya Johnson</b><span>Regional Support Lead, Southeast</span></div>
+            <span class="topic">New Chapters</span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-avatar">DT</div>
+            <div class="info"><b>David Torres</b><span>Programming &amp; Partnerships</span></div>
+            <span class="topic">Joint Events</span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-avatar">RA</div>
+            <div class="info"><b>Renee Adeyemi</b><span>Leadership Development</span></div>
+            <span class="topic">Training &amp; Handover</span>
+          </div>
+          <div class="contact-row">
+            <div class="contact-avatar">KP</div>
+            <div class="info"><b>Kwame Peters</b><span>Sponsor &amp; Funding Relations</span></div>
+            <span class="topic">Fundraising</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- CHAPTER LEADERS PANEL -->
+      <div class="contact-panel" id="panel-leaders">
+        <div class="contact-search">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
+          <input type="text" placeholder="Search by chapter, region, or topic...">
+        </div>
+        <div class="contact-section-label">Southeast Region</div>
+        <div class="contact-list">
+          <div class="contact-row leader">
+            <div class="contact-avatar">AB</div>
+            <div class="info"><b>Amara Blake</b><span>President <span class="chapter-line">Howard University Chapter</span></span></div>
+            <span class="topic">Chartering &amp; Startup</span>
+          </div>
+          <div class="contact-row leader">
+            <div class="contact-avatar">JW</div>
+            <div class="info"><b>Jalen Ware</b><span>President <span class="chapter-line">Clark Atlanta University Chapter</span></span></div>
+            <span class="topic">Joint Events</span>
+          </div>
+          <div class="contact-row leader">
+            <div class="contact-avatar">SC</div>
+            <div class="info"><b>Simone Carter</b><span>VP of Programming <span class="chapter-line">Xavier University Chapter</span></span></div>
+            <span class="topic">Sponsor Outreach</span>
+          </div>
+        </div>
+        <div class="contact-section-label">Midwest Region</div>
+        <div class="contact-list">
+          <div class="contact-row leader">
+            <div class="contact-avatar">TO</div>
+            <div class="info"><b>Tobi Okafor</b><span>President <span class="chapter-line">Prairie View A&amp;M Chapter</span></span></div>
+            <span class="topic">Low-Budget Programming</span>
+          </div>
+          <div class="contact-row leader">
+            <div class="contact-avatar">LM</div>
+            <div class="info"><b>Layla Moore</b><span>Treasurer <span class="chapter-line">Morgan State Chapter</span></span></div>
+            <span class="topic">Budgeting</span>
+          </div>
+        </div>
+        <div class="contact-section-label">Southwest Region</div>
+        <div class="contact-list">
+          <div class="contact-row leader">
+            <div class="contact-avatar">DR</div>
+            <div class="info"><b>Devin Ross</b><span>Past President <span class="chapter-line">Florida A&amp;M University Chapter</span></span></div>
+            <span class="topic">Leadership Handover</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+</div>
+
+<script>
+  const navItems = document.querySelectorAll('.nav-item');
+  const views = document.querySelectorAll('.view');
+  const topbarLabel = document.getElementById('topbarLabel');
+  const labels = {
+    dashboard: 'Dashboard',
+    kb: 'Knowledge Base',
+    calendar: 'Cross-Chapter Calendar',
+    handover: 'Handover Templates',
+    training: 'Leadership Training',
+    contacts: 'Find a Contact'
+  };
+
+  navItems.forEach(item => {
+    item.addEventListener('click', () => {
+      navItems.forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      views.forEach(v => v.classList.remove('active'));
+      const target = document.getElementById('view-' + item.dataset.view);
+      if(target) target.classList.add('active');
+      topbarLabel.textContent = labels[item.dataset.view];
+    });
+  });
+
+  // Knowledge base search
+  const kbSearchInput = document.getElementById('kbSearchInput');
+  const kbCards = document.querySelectorAll('.kb-card');
+  function applyKbFilters(){
+    const query = kbSearchInput.value.toLowerCase().trim();
+    const activeFilter = document.querySelector('.filter-chip.active').dataset.filter;
+    kbCards.forEach(card => {
+      const matchesText = !query || card.dataset.text.includes(query) || card.querySelector('h5').textContent.toLowerCase().includes(query);
+      const matchesFilter = activeFilter === 'all' || card.dataset.cat === activeFilter;
+      card.classList.toggle('hidden', !(matchesText && matchesFilter));
+    });
+  }
+  kbSearchInput.addEventListener('input', applyKbFilters);
+  document.querySelectorAll('.filter-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      applyKbFilters();
+    });
+  });
+
+  // Contacts tabs
+  document.querySelectorAll('.contact-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.contact-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.contact-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('panel-' + tab.dataset.panel).classList.add('active');
+    });
+  });
+
+  // Handover TOC (visual only)
+  document.querySelectorAll('.toc-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+    });
+  });
+</script>
+
+</body>
+</html>
