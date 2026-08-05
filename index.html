@@ -18,6 +18,14 @@
     --paper-dim:#EEEAE1;
     --char:#1A1A1A;
     --line:rgba(15,31,61,0.12);
+    --purple:#6B4E9E;
+    --purple-bg:rgba(107,78,158,0.09);
+    --blue:#2C5AA0;
+    --blue-bg:rgba(44,90,160,0.09);
+    --rust:#B5533C;
+    --rust-bg:rgba(181,83,60,0.09);
+    --slate:#4F7089;
+    --slate-bg:rgba(79,112,137,0.09);
   }
   *{margin:0;padding:0;box-sizing:border-box;}
   html{-webkit-text-size-adjust:100%;}
@@ -36,7 +44,7 @@
   .app-shell{display:grid;grid-template-columns:236px 1fr;height:100vh;}
 
   /* ===== SIDEBAR ===== */
-  .sidebar{background:var(--ink);color:var(--paper);padding:24px 16px;display:flex;flex-direction:column;}
+  .sidebar{background:var(--ink);color:var(--paper);padding:24px 16px;display:flex;flex-direction:column;overflow-y:auto;}
   .brand{display:flex;align-items:center;gap:10px;font-family:'Fraunces',serif;font-weight:600;font-size:17px;padding:6px 10px 26px;}
   .brand-mark{width:22px;height:22px;border-radius:50%;background:conic-gradient(from 200deg, var(--teal), var(--gold), var(--ink) 80%);flex-shrink:0;}
   .sidebar-close{display:none;}
@@ -53,7 +61,26 @@
   .nav-item:hover{background:rgba(247,245,240,0.06);color:var(--paper);}
   .nav-item.active{background:rgba(247,245,240,0.12);color:var(--paper);font-weight:500;}
   .nav-item.active svg{opacity:1;}
-  .sidebar-footer{margin-top:auto;padding:14px 12px;border-top:1px solid rgba(247,245,240,0.1);}
+  .sidebar-footer{margin-top:auto;padding:14px 12px;border-top:1px solid rgba(247,245,240,0.1);display:flex;flex-direction:column;gap:6px;}
+  .account-row{display:flex;align-items:center;gap:6px;}
+  .account-chip{display:flex;align-items:center;gap:10px;flex:1;min-width:0;text-align:left;padding:6px;border-radius:6px;}
+  .account-chip:hover{background:rgba(247,245,240,0.06);}
+  .account-avatar{width:26px;height:26px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:600;font-size:11px;flex-shrink:0;}
+  .account-name{font-size:12px;font-weight:500;color:var(--paper);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+  .account-role{font-size:10.5px;color:rgba(247,245,240,0.45);}
+  .logout-icon-btn{width:30px;height:30px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:rgba(247,245,240,0.55);flex-shrink:0;}
+  .logout-icon-btn:hover{background:rgba(247,245,240,0.08);color:var(--paper);}
+  .checkbox-row{display:flex;align-items:center;gap:9px;padding:8px 0;font-size:13px;color:var(--char);}
+  .checkbox-row input{width:auto;}
+
+  .login-overlay{display:none;position:fixed;inset:0;background:var(--ink);z-index:100;align-items:center;justify-content:center;padding:24px;}
+  .login-overlay.open{display:flex;}
+  .login-panel{background:#fff;border-radius:12px;max-width:380px;width:100%;padding:34px 30px;box-shadow:0 30px 70px -20px rgba(0,0,0,0.5);}
+  .login-panel .brand{padding:0 0 20px;justify-content:center;}
+  .login-panel h3{font-size:19px;text-align:center;margin-bottom:6px;}
+  .login-panel .sub{font-size:13px;color:#7a7a7a;text-align:center;margin-bottom:22px;}
+  .login-panel .btn-gold{width:100%;padding:11px;font-size:13.5px;margin-top:6px;}
+  .login-note{font-size:11.5px;color:#a8a8a8;text-align:center;margin-top:14px;}
   .chapter-chip{display:flex;align-items:center;gap:10px;}
   .chapter-avatar{
     width:30px;height:30px;border-radius:50%;background:var(--gold);
@@ -79,11 +106,13 @@
   .btn{padding:8px 15px;border-radius:5px;font-size:13px;font-weight:500;white-space:nowrap;}
   .btn-gold{background:var(--gold);color:var(--ink);}
   .btn-ghost{border:1px solid var(--line);color:var(--ink);}
+  .btn-teal{background:var(--teal);color:#fff;}
+  .btn:disabled{opacity:0.55;cursor:default;}
   .view{padding:36px;display:none;}
   .view.active{display:block;animation:fadeIn .25s ease;}
   @keyframes fadeIn{from{opacity:0;transform:translateY(4px);}to{opacity:1;transform:translateY(0);}}
 
-  .view-head{margin-bottom:28px;}
+  .view-head{margin-bottom:28px;display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
   .view-head h2{font-size:26px;margin-bottom:6px;}
   .view-head p{color:#7a7a7a;font-size:14px;}
 
@@ -128,10 +157,14 @@
   .kb-card.hidden{display:none;}
 
   /* ===== CALENDAR ===== */
-  .cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;gap:12px;flex-wrap:wrap;}
+  .cal-toolbar{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;gap:12px;flex-wrap:wrap;}
   .cal-nav{display:flex;gap:6px;align-items:center;}
   .cal-nav button{width:30px;height:30px;border:1px solid var(--line);border-radius:5px;font-size:15px;}
   .cal-month{font-family:'Fraunces',serif;font-size:17px;margin:0 8px;}
+  .region-filter-row{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+  .region-chip{padding:6px 13px;border:1px solid var(--line);border-radius:20px;font-size:12.5px;color:#5a5a5a;transition:all .12s;display:flex;align-items:center;gap:6px;}
+  .region-chip .dot{width:7px;height:7px;border-radius:50%;}
+  .region-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
   .cal-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch;}
   .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);border:1px solid var(--line);border-radius:8px;overflow:hidden;min-width:560px;}
   .cal-dow{background:var(--paper-dim);text-align:center;font-size:11px;color:#8a8a8a;padding:8px 0;font-family:'IBM Plex Mono',monospace;text-transform:uppercase;border-bottom:1px solid var(--line);}
@@ -144,8 +177,12 @@
   .cal-event{
     margin-top:4px;font-size:10.5px;background:var(--teal-bg);color:var(--teal);
     padding:2px 5px;border-radius:3px;font-weight:500;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;
+    transition:opacity .12s, max-height .12s;
   }
   .cal-event.gold{background:rgba(201,147,46,0.12);color:#96701f;}
+  .cal-event.purple{background:var(--purple-bg);color:var(--purple);}
+  .cal-event.blue{background:var(--blue-bg);color:var(--blue);}
+  .cal-event.region-hidden{display:none;}
   .legend{display:flex;gap:18px;margin-top:16px;flex-wrap:wrap;}
   .legend-item{display:flex;align-items:center;gap:7px;font-size:12.5px;color:#5a5a5a;}
   .legend-dot{width:8px;height:8px;border-radius:2px;}
@@ -158,10 +195,11 @@
   .form-block{margin-bottom:26px;}
   .form-block label{display:block;font-size:12.5px;font-weight:600;color:var(--ink);margin-bottom:6px;}
   .form-block .hint{font-size:12px;color:#9a9a9a;margin-bottom:8px;}
-  .form-block textarea, .form-block input{
-    width:100%;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:inherit;font-size:13.5px;resize:vertical;
+  .form-block textarea, .form-block input, .form-block select{
+    width:100%;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:inherit;font-size:13.5px;resize:vertical;background:#fff;
   }
   .form-block textarea{min-height:70px;}
+  .form-row{display:grid;grid-template-columns:1fr 1fr;gap:16px;}
 
   /* ===== TRAINING ===== */
   .training-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
@@ -181,8 +219,9 @@
   .contact-row .info b{font-size:14px;display:block;color:var(--ink);}
   .contact-row .info span{font-size:12.5px;color:#8a8a8a;}
   .contact-row .topic{font-size:12px;background:var(--paper-dim);padding:4px 10px;border-radius:20px;color:#6a6a6a;}
+  .contact-section-label{font-family:'IBM Plex Mono',monospace;font-size:11px;text-transform:uppercase;letter-spacing:0.06em;color:#9a9a9a;margin:18px 0 6px;}
 
-  .contact-tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);}
+  .contact-tabs{display:flex;gap:6px;margin-bottom:24px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
   .contact-tab{
     padding:11px 4px;margin-right:22px;font-size:13.5px;color:#8a8a8a;font-weight:500;
     border-bottom:2px solid transparent;position:relative;top:1px;
@@ -198,6 +237,90 @@
   }
   .contact-search input{border:none;outline:none;font-size:13.5px;flex:1;font-family:inherit;min-width:0;}
 
+  /* ===== REGIONAL HUB ===== */
+  .region-tabs{display:flex;gap:6px;margin-bottom:26px;border-bottom:1px solid var(--line);flex-wrap:wrap;}
+  .region-tab{padding:11px 4px;margin-right:26px;font-size:14px;color:#8a8a8a;font-weight:500;border-bottom:2px solid transparent;position:relative;top:1px;display:flex;align-items:center;gap:8px;}
+  .region-tab .dot{width:8px;height:8px;border-radius:50%;}
+  .region-tab.active{color:var(--ink);border-bottom-color:var(--gold);}
+  .region-panel{display:none;}
+  .region-panel.active{display:block;animation:fadeIn .2s ease;}
+
+  .region-lead-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--teal-bg);border-radius:8px;padding:16px 20px;margin-bottom:22px;}
+  .region-lead-banner .who{display:flex;align-items:center;gap:12px;}
+  .region-lead-banner .chapters{font-size:12px;color:#5a5a5a;}
+  .region-lead-banner .chapters b{color:var(--ink);}
+
+  .region-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .region-card{border:1px solid var(--line);border-radius:8px;padding:20px 22px;}
+  .region-card h4{font-size:15px;margin-bottom:4px;}
+  .region-card .sub{font-size:12px;color:#8a8a8a;margin-bottom:16px;}
+  .region-card.span-2{grid-column:1 / -1;}
+  .region-card.accent-purple{border-left:3px solid var(--purple);}
+  .region-card.accent-blue{border-left:3px solid var(--blue);}
+
+  .social-list{display:flex;flex-direction:column;gap:4px;}
+  .social-row{display:flex;align-items:center;gap:12px;padding:9px 4px;border-radius:6px;transition:background .12s;}
+  .social-row:hover{background:var(--paper-dim);}
+  .social-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex-shrink:0;color:#fff;font-size:13px;font-weight:600;}
+  .social-icon.li{background:#274a77;}
+  .social-icon.ig{background:var(--gold);}
+  .social-icon.x{background:var(--ink);}
+  .social-icon.gm{background:var(--teal);}
+  .social-row .plat{font-size:11px;color:#9a9a9a;text-transform:uppercase;letter-spacing:0.04em;font-family:'IBM Plex Mono',monospace;}
+  .social-row .handle{font-size:13.5px;font-weight:500;color:var(--ink);}
+
+  .mailing-form{display:flex;gap:8px;margin-top:14px;flex-wrap:wrap;}
+  .mailing-form input{flex:1;min-width:180px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;font-family:inherit;font-size:13.5px;}
+  .mailing-confirm{display:none;align-items:center;gap:8px;margin-top:12px;font-size:12.5px;color:var(--teal);font-weight:500;}
+  .mailing-confirm.show{display:flex;}
+
+  .conf-meta{display:flex;flex-wrap:wrap;gap:18px;margin:14px 0 16px;}
+  .conf-meta div .k{font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9a9a9a;font-family:'IBM Plex Mono',monospace;margin-bottom:3px;}
+  .conf-meta div .v{font-size:14px;font-weight:600;color:var(--ink);}
+  .quarterly-note{font-size:13px;color:#6a6a6a;line-height:1.55;margin-bottom:14px;}
+
+  /* ===== MEMBER REGISTRATION ===== */
+  .reg-layout{display:grid;grid-template-columns:1fr 1fr;gap:24px;align-items:start;}
+  .email-preview{border:1px solid var(--line);border-radius:8px;overflow:hidden;position:sticky;top:0;}
+  .email-preview .ep-head{background:var(--paper-dim);padding:14px 18px;border-bottom:1px solid var(--line);}
+  .email-preview .ep-head .ep-label{font-size:10.5px;text-transform:uppercase;letter-spacing:0.05em;color:#9a9a9a;font-family:'IBM Plex Mono',monospace;margin-bottom:6px;}
+  .email-preview .ep-head .ep-subject{font-size:14.5px;font-weight:600;color:var(--ink);}
+  .email-preview .ep-body{padding:20px;font-size:13.5px;line-height:1.7;color:#333;white-space:pre-line;min-height:220px;}
+  .email-preview.empty .ep-body{color:#a8a8a8;font-style:italic;}
+  .email-preview .ep-footer{padding:12px 18px;border-top:1px solid var(--line);font-size:11.5px;color:#9a9a9a;}
+  .reg-note{font-size:12px;color:#9a9a9a;margin-top:6px;line-height:1.5;}
+  .locked-field{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1px solid var(--line);border-radius:6px;padding:10px 12px;background:var(--paper-dim);font-size:13.5px;color:var(--ink);font-weight:500;}
+  .locked-field .lock-note{display:flex;align-items:center;gap:7px;font-size:11px;color:#9a9a9a;font-weight:400;}
+  .conditional-field{display:none;margin-top:14px;}
+  .conditional-field.show{display:block;}
+
+  /* ===== MODALS ===== */
+  .modal-backdrop{display:none;position:fixed;inset:0;background:rgba(15,31,61,0.5);z-index:60;align-items:flex-start;justify-content:center;padding:6vh 16px;overflow-y:auto;}
+  .modal-backdrop.open{display:flex;}
+  .modal-panel{background:#fff;border-radius:10px;max-width:480px;width:100%;box-shadow:0 24px 60px -20px rgba(15,31,61,0.4);animation:fadeIn .18s ease;}
+  .modal-head{display:flex;align-items:center;justify-content:space-between;padding:20px 22px;border-bottom:1px solid var(--line);}
+  .modal-head h3{font-size:17px;}
+  .modal-close{width:28px;height:28px;border-radius:6px;display:flex;align-items:center;justify-content:center;color:#8a8a8a;flex-shrink:0;}
+  .modal-close:hover{background:var(--paper-dim);}
+  .modal-body{padding:22px;max-height:64vh;overflow-y:auto;}
+  .modal-foot{padding:16px 22px;border-top:1px solid var(--line);display:flex;justify-content:flex-end;gap:10px;}
+  .toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--ink);color:#fff;padding:12px 20px;border-radius:8px;font-size:13.5px;display:flex;align-items:center;gap:8px;opacity:0;pointer-events:none;transition:opacity .2s, transform .2s;z-index:70;}
+  .toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+
+  /* ===== MY CHAPTER PAGE ===== */
+  .chapter-banner{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;background:var(--teal-bg);border-radius:8px;padding:20px 22px;margin-bottom:24px;}
+  .chapter-banner .who{display:flex;align-items:center;gap:14px;}
+  .chapter-banner .cb-avatar{width:52px;height:52px;border-radius:50%;background:var(--gold);color:var(--ink);display:flex;align-items:center;justify-content:center;font-family:'Fraunces',serif;font-weight:700;font-size:19px;flex-shrink:0;}
+  .chapter-banner .cb-name{font-size:18px;font-weight:600;color:var(--ink);font-family:'Fraunces',serif;}
+  .chapter-banner .cb-meta{font-size:12.5px;color:#5a5a5a;margin-top:3px;}
+  .eboard-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;}
+  .eboard-card{border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;align-items:center;gap:12px;}
+  .eboard-avatar{width:38px;height:38px;border-radius:50%;background:var(--teal);color:#fff;display:flex;align-items:center;justify-content:center;font-weight:600;font-size:12.5px;font-family:'Fraunces',serif;flex-shrink:0;}
+  .eboard-card b{font-size:13.5px;display:block;color:var(--ink);}
+  .eboard-card span{font-size:11.5px;color:#8a8a8a;}
+  .chapter-kb-list{display:flex;flex-direction:column;gap:10px;}
+  .chapter-kb-empty{font-size:13px;color:#9a9a9a;font-style:italic;padding:8px 0;}
+
   /* =======================================================
      RESPONSIVE / MOBILE
      ======================================================= */
@@ -205,7 +328,6 @@
     body{overflow:auto;height:auto;min-height:100vh;}
     .app-shell{grid-template-columns:1fr;height:auto;min-height:100vh;}
 
-    /* Sidebar becomes a slide-in drawer instead of disappearing */
     .sidebar{
       position:fixed;top:0;left:0;height:100vh;width:250px;max-width:80vw;
       z-index:40;transform:translateX(-100%);transition:transform .22s ease;
@@ -224,7 +346,6 @@
     }
     .sidebar-backdrop.open{display:block;}
 
-    /* Hamburger button shown in the topbar */
     .menu-toggle{
       display:flex;align-items:center;justify-content:center;
       width:36px;height:36px;border-radius:6px;border:1px solid var(--line);flex-shrink:0;
@@ -241,7 +362,7 @@
     .view-head p{font-size:13px;}
 
     .stat-row{grid-template-columns:repeat(2,1fr);gap:10px;}
-    .panel-row, .kb-grid, .training-grid, .handover-layout{grid-template-columns:1fr;}
+    .panel-row, .kb-grid, .training-grid, .handover-layout, .region-grid, .reg-layout, .form-row, .eboard-grid{grid-template-columns:1fr;}
     .handover-layout{gap:0;}
     .toc{
       border-right:none;padding-right:0;border-bottom:1px solid var(--line);
@@ -253,6 +374,10 @@
     .cal-toolbar{align-items:flex-start;}
     .contact-row{padding:14px 2px;}
     .contact-row .topic{order:3;margin-left:58px;}
+
+    .region-lead-banner{flex-direction:column;align-items:flex-start;}
+    .chapter-banner{flex-direction:column;align-items:flex-start;}
+    .email-preview{position:static;}
   }
 
   @media (max-width:520px){
@@ -280,6 +405,16 @@
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg>
       Dashboard
     </button>
+    <button class="nav-item" data-view="mychapter">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 21h18M5 21V7l7-4 7 4v14M9 21v-6h6v6"/></svg>
+      My Chapter
+    </button>
+
+    <div class="nav-group-label">Regions</div>
+    <button class="nav-item" data-view="regional">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg>
+      Regional Hub
+    </button>
 
     <div class="nav-group-label">Chapter Support</div>
     <button class="nav-item" data-view="kb">
@@ -289,6 +424,12 @@
     <button class="nav-item" data-view="contacts">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
       Find a Contact
+    </button>
+
+    <div class="nav-group-label">Membership</div>
+    <button class="nav-item" data-view="registration">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><path d="M20 8v6M23 11h-6"/></svg>
+      Member Registration
     </button>
 
     <div class="nav-group-label">Connection</div>
@@ -308,12 +449,24 @@
     </button>
 
     <div class="sidebar-footer">
-      <div class="chapter-chip">
-        <div class="chapter-avatar">CS</div>
+      <button class="chapter-chip" id="chapterChipBtn" style="width:100%;text-align:left;">
+        <div class="chapter-avatar" id="chapterChipAvatar">CS</div>
         <div>
-          <div class="chapter-name">Clark State Chapter</div>
+          <div class="chapter-name" id="chapterChipName">Clark State Chapter</div>
           <div class="chapter-role">Chapter President</div>
         </div>
+      </button>
+      <div class="account-row">
+        <button class="account-chip" id="accountChipBtn" title="Account Settings">
+          <div class="account-avatar" id="accountAvatar">JB</div>
+          <div>
+            <div class="account-name" id="accountChipName">Jordan Blake</div>
+            <div class="account-role">Account Settings</div>
+          </div>
+        </button>
+        <button class="logout-icon-btn" id="logoutBtn" title="Log out" aria-label="Log out">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="M16 17l5-5-5-5"/><path d="M21 12H9"/></svg>
+        </button>
       </div>
     </div>
   </aside>
@@ -327,30 +480,32 @@
         <h4 id="topbarLabel">Dashboard</h4>
       </div>
       <div class="topbar-actions">
-        <button class="btn btn-ghost"><span class="full-label">Chapter </span>Settings</button>
-        <button class="btn btn-gold">+ <span class="full-label">Submit a </span>Solution</button>
+        <button class="btn btn-ghost" id="chapterSettingsBtn"><span class="full-label">Account </span>Settings</button>
+        <button class="btn btn-gold" id="submitSolutionBtn">+ <span class="full-label">Submit a </span>Solution</button>
       </div>
     </div>
 
     <!-- DASHBOARD -->
     <section class="view active" id="view-dashboard">
       <div class="view-head">
-        <h2>Welcome back, Clark State.</h2>
-        <p>Here's what's happening across the network this week.</p>
+        <div>
+          <h2>Welcome back, Clark State.</h2>
+          <p>Here's what's happening across the network this week.</p>
+        </div>
       </div>
       <div class="stat-row">
-        <div class="stat-box"><div class="num">62</div><div class="lbl">Connected chapters</div></div>
+        <div class="stat-box"><div class="num">74</div><div class="lbl">Connected chapters</div></div>
         <div class="stat-box"><div class="num">184</div><div class="lbl">Knowledge base entries</div></div>
         <div class="stat-box"><div class="num">9</div><div class="lbl">Joint events this month</div></div>
-        <div class="stat-box"><div class="num">100%</div><div class="lbl">Handovers completed, spring cohort</div></div>
+        <div class="stat-box"><div class="num">5</div><div class="lbl">Active regions</div></div>
       </div>
       <div class="panel-row">
         <div class="panel">
           <h3>Network Activity</h3>
+          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Regional Hub</b> is now live — find your region's socials, mailing list, and meeting dates.</div><div class="feed-time">Just now</div></div></div>
           <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Prairie View A&amp;M</b> posted a solution on sponsor outreach templates.</div><div class="feed-time">2 hours ago</div></div></div>
           <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Howard University</b> invited nearby chapters to a joint networking night, Oct 14.</div><div class="feed-time">Yesterday</div></div></div>
           <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Xavier University</b> completed their spring leadership handover.</div><div class="feed-time">3 days ago</div></div></div>
-          <div class="feed-item"><div class="feed-dot"></div><div><div class="feed-text"><b>Morgan State</b> chapter chartering was approved — first post-approval milestone.</div><div class="feed-time">5 days ago</div></div></div>
         </div>
         <div class="panel">
           <h3>Your Point of Contact</h3>
@@ -366,11 +521,87 @@
       </div>
     </section>
 
+    <!-- REGIONAL HUB -->
+    <section class="view" id="view-regional">
+      <div class="view-head">
+        <div>
+          <h2>Regional Hub</h2>
+          <p>Socials, mailing lists, and the two dates each region builds its year around.</p>
+        </div>
+      </div>
+
+      <div class="region-tabs" id="regionTabs">
+        <button class="region-tab active" data-region="southeast"><span class="dot" style="background:var(--teal);"></span>Southeast</button>
+        <button class="region-tab" data-region="midwest"><span class="dot" style="background:var(--gold);"></span>Midwest</button>
+        <button class="region-tab" data-region="northeast"><span class="dot" style="background:var(--rust);"></span>Northeast</button>
+        <button class="region-tab" data-region="southwest"><span class="dot" style="background:var(--purple);"></span>Southwest</button>
+        <button class="region-tab" data-region="west"><span class="dot" style="background:var(--slate);"></span>West</button>
+      </div>
+
+      <div id="regionPanels"><!-- filled by JS --></div>
+    </section>
+
+    <!-- MY CHAPTER -->
+    <section class="view" id="view-mychapter">
+      <div class="view-head">
+        <div>
+          <h2>My Chapter</h2>
+          <p>Everything specific to Clark State — roster, socials, and what only your chapter controls.</p>
+        </div>
+        <button class="btn btn-ghost" id="myChapterSettingsBtn">Edit Chapter Info</button>
+      </div>
+
+      <div class="chapter-banner">
+        <div class="who">
+          <div class="cb-avatar" id="cbAvatar">CS</div>
+          <div>
+            <div class="cb-name" id="cbName">Clark State University Chapter</div>
+            <div class="cb-meta" id="cbMeta">Southeast Region · Founded 2019</div>
+          </div>
+        </div>
+        <div class="cb-meta" id="cbMeeting">Thursdays, 6:00 PM · Room 214, Student Union</div>
+      </div>
+
+      <div class="region-grid">
+        <div class="region-card">
+          <h4>Social Media</h4>
+          <div class="sub">Clark State's own accounts — separate from the regional ones.</div>
+          <div class="social-list" id="cbSocialList"><!-- filled by JS --></div>
+        </div>
+
+        <div class="region-card">
+          <h4>Regional Support</h4>
+          <div class="sub">Your point of contact for the Southeast region.</div>
+          <div class="contact-card">
+            <div class="contact-avatar">MJ</div>
+            <div>
+              <div class="contact-name">Maya Johnson</div>
+              <div class="contact-role">Regional Support Lead, Southeast</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="region-card span-2">
+          <h4>E-Board</h4>
+          <div class="sub">Current chapter officers.</div>
+          <div class="eboard-grid" id="cbEboardGrid"><!-- filled by JS --></div>
+        </div>
+
+        <div class="region-card span-2">
+          <h4>Solutions Submitted by Clark State</h4>
+          <div class="sub">Knowledge base entries your chapter has shared with the network.</div>
+          <div class="chapter-kb-list" id="cbKbList"><!-- filled by JS --></div>
+        </div>
+      </div>
+    </section>
+
     <!-- KNOWLEDGE BASE -->
     <section class="view" id="view-kb">
       <div class="view-head">
-        <h2>Knowledge Base</h2>
-        <p>Solutions submitted by chapters who've faced this before.</p>
+        <div>
+          <h2>Knowledge Base</h2>
+          <p>Solutions submitted by chapters who've faced this before.</p>
+        </div>
       </div>
       <div class="kb-search">
         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#9a9a9a" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg>
@@ -423,11 +654,77 @@
       </div>
     </section>
 
+    <!-- MEMBER REGISTRATION -->
+    <section class="view" id="view-registration">
+      <div class="view-head">
+        <div>
+          <h2>Member Registration</h2>
+          <p>New and renewing Clark State members register here — ChapterLink sends a welcome email automatically.</p>
+        </div>
+      </div>
+
+      <div class="reg-layout">
+        <form id="regForm">
+          <div class="form-block">
+            <label>Full name</label>
+            <input type="text" id="regName" placeholder="e.g. Jordan Blake" required>
+          </div>
+          <div class="form-row">
+            <div class="form-block">
+              <label>Email address</label>
+              <input type="email" id="regEmail" placeholder="jordan@school.edu" required>
+            </div>
+            <div class="form-block">
+              <label>Membership type</label>
+              <select id="regType">
+                <option value="New Member">New Member</option>
+                <option value="Renewing Member">Renewing Member</option>
+              </select>
+            </div>
+          </div>
+          <div class="form-block">
+            <label>Chapter</label>
+            <div class="locked-field">
+              <span id="regChapterLabel">Clark State University — Southeast</span>
+              <span class="lock-note"><svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="4" y="10" width="16" height="10" rx="2"/><path d="M7 10V7a5 5 0 0 1 10 0v3"/></svg>Locked to your chapter</span>
+            </div>
+            <div class="hint" style="margin-top:8px;">This registration page only enrolls members into Clark State — it isn't a network-wide sign-up.</div>
+          </div>
+          <div class="form-block">
+            <label>Role in the chapter</label>
+            <select id="regRole">
+              <option value="General Member">General Member</option>
+              <option value="E-board Member">E-board Member</option>
+              <option value="Chapter President">Chapter President</option>
+            </select>
+          </div>
+          <div class="form-block conditional-field" id="eboardPositionField">
+            <label>E-board position</label>
+            <input type="text" id="regEboardPosition" placeholder="e.g. Treasurer, VP of Programming">
+          </div>
+          <button type="submit" class="btn btn-gold">Register &amp; Generate Welcome Email</button>
+          <p class="reg-note">This preview simulates the email your registration integration would send — connect a mail provider to send it for real.</p>
+        </form>
+
+        <div class="email-preview empty" id="emailPreview">
+          <div class="ep-head">
+            <div class="ep-label">Auto-generated preview</div>
+            <div class="ep-subject" id="epSubject">Fill out the form to preview a welcome email</div>
+            <div class="ep-to" id="epTo" style="font-size:12px;color:#8a8a8a;margin-top:4px;"></div>
+          </div>
+          <div class="ep-body" id="epBody">Once a name, email, and chapter are submitted, ChapterLink will draft a region-specific welcome message here — pulling in the right regional lead, mailing list link, and upcoming dates automatically.</div>
+          <div class="ep-footer" id="epFooter">No email sent yet</div>
+        </div>
+      </div>
+    </section>
+
     <!-- CALENDAR -->
     <section class="view" id="view-calendar">
       <div class="view-head">
-        <h2>Cross-Chapter Calendar</h2>
-        <p>See what other chapters are planning, and coordinate instead of overlapping.</p>
+        <div>
+          <h2>Cross-Chapter Calendar</h2>
+          <p>See what other chapters are planning, and coordinate instead of overlapping.</p>
+        </div>
       </div>
       <div class="cal-toolbar">
         <div class="cal-nav">
@@ -435,57 +732,69 @@
         </div>
         <button class="btn btn-ghost">+ Add Event</button>
       </div>
+      <div class="region-filter-row" id="calRegionFilter">
+        <button class="region-chip active" data-region="all">All Regions</button>
+        <button class="region-chip" data-region="southeast"><span class="dot" style="background:var(--teal);"></span>Southeast</button>
+        <button class="region-chip" data-region="midwest"><span class="dot" style="background:var(--gold);"></span>Midwest</button>
+        <button class="region-chip" data-region="northeast"><span class="dot" style="background:var(--rust);"></span>Northeast</button>
+        <button class="region-chip" data-region="southwest"><span class="dot" style="background:var(--purple);"></span>Southwest</button>
+        <button class="region-chip" data-region="west"><span class="dot" style="background:var(--slate);"></span>West</button>
+      </div>
       <div class="cal-scroll">
-      <div class="cal-grid">
+      <div class="cal-grid" id="calGrid">
         <div class="cal-dow">Sun</div><div class="cal-dow">Mon</div><div class="cal-dow">Tue</div><div class="cal-dow">Wed</div><div class="cal-dow">Thu</div><div class="cal-dow">Fri</div><div class="cal-dow">Sat</div>
         <div class="cal-cell"><div class="dnum">27</div></div>
         <div class="cal-cell"><div class="dnum">28</div></div>
         <div class="cal-cell"><div class="dnum">29</div></div>
         <div class="cal-cell"><div class="dnum">30</div></div>
-        <div class="cal-cell"><div class="dnum">1</div><div class="cal-event">GA Tech · Info Night</div></div>
+        <div class="cal-cell"><div class="dnum">1</div><div class="cal-event" data-region="southeast">GA Tech · Info Night</div></div>
         <div class="cal-cell"><div class="dnum">2</div></div>
-        <div class="cal-cell"><div class="dnum">3</div></div>
+        <div class="cal-cell"><div class="dnum">3</div><div class="cal-event blue" data-region="northeast">NE Quarterly Leadership Mtg</div></div>
         <div class="cal-cell"><div class="dnum">4</div></div>
         <div class="cal-cell"><div class="dnum">5</div></div>
         <div class="cal-cell"><div class="dnum">6</div></div>
-        <div class="cal-cell"><div class="dnum">7</div><div class="cal-event gold">Leadership Training</div></div>
+        <div class="cal-cell"><div class="dnum">7</div><div class="cal-event gold" data-region="all">Leadership Training</div></div>
         <div class="cal-cell"><div class="dnum">8</div></div>
-        <div class="cal-cell"><div class="dnum">9</div></div>
+        <div class="cal-cell"><div class="dnum">9</div><div class="cal-event blue" data-region="southeast">SE Quarterly Leadership Mtg</div></div>
         <div class="cal-cell"><div class="dnum">10</div></div>
-        <div class="cal-cell"><div class="dnum">11</div></div>
+        <div class="cal-cell"><div class="dnum">11</div><div class="cal-event blue" data-region="west">West Quarterly Leadership Mtg</div></div>
         <div class="cal-cell"><div class="dnum">12</div></div>
         <div class="cal-cell"><div class="dnum">13</div></div>
-        <div class="cal-cell today"><div class="dnum">14</div><div class="cal-event">Howard · Networking Night</div></div>
-        <div class="cal-cell"><div class="dnum">15</div><div class="cal-event">FAMU · Sponsor Panel</div></div>
+        <div class="cal-cell today"><div class="dnum">14</div><div class="cal-event" data-region="southeast">Howard · Networking Night</div></div>
+        <div class="cal-cell"><div class="dnum">15</div><div class="cal-event" data-region="southwest">FAMU · Sponsor Panel</div></div>
         <div class="cal-cell"><div class="dnum">16</div></div>
-        <div class="cal-cell"><div class="dnum">17</div></div>
-        <div class="cal-cell"><div class="dnum">18</div></div>
+        <div class="cal-cell"><div class="dnum">17</div><div class="cal-event purple" data-region="midwest">Midwest Regional Conf. (Day 1)</div></div>
+        <div class="cal-cell"><div class="dnum">18</div><div class="cal-event purple" data-region="midwest">Midwest Regional Conf. (Day 2)</div></div>
         <div class="cal-cell"><div class="dnum">19</div></div>
         <div class="cal-cell"><div class="dnum">20</div></div>
-        <div class="cal-cell"><div class="dnum">21</div><div class="cal-event">Xavier · Joint Social</div></div>
+        <div class="cal-cell"><div class="dnum">21</div><div class="cal-event" data-region="southeast">Xavier · Joint Social</div></div>
         <div class="cal-cell"><div class="dnum">22</div></div>
         <div class="cal-cell"><div class="dnum">23</div></div>
-        <div class="cal-cell"><div class="dnum">24</div></div>
+        <div class="cal-cell"><div class="dnum">24</div><div class="cal-event blue" data-region="midwest">MW Quarterly Leadership Mtg</div></div>
         <div class="cal-cell"><div class="dnum">25</div></div>
         <div class="cal-cell"><div class="dnum">26</div></div>
         <div class="cal-cell"><div class="dnum">27</div></div>
-        <div class="cal-cell"><div class="dnum">28</div><div class="cal-event gold">Handover Deadline</div></div>
+        <div class="cal-cell"><div class="dnum">28</div><div class="cal-event gold" data-region="all">Handover Deadline</div></div>
         <div class="cal-cell"><div class="dnum">29</div></div>
-        <div class="cal-cell"><div class="dnum">30</div></div>
+        <div class="cal-cell"><div class="dnum">30</div><div class="cal-event blue" data-region="southwest">SW Quarterly Leadership Mtg</div></div>
         <div class="cal-cell"><div class="dnum">31</div></div>
       </div>
       </div>
       <div class="legend">
         <div class="legend-item"><span class="legend-dot" style="background:var(--teal);"></span>Chapter events</div>
         <div class="legend-item"><span class="legend-dot" style="background:var(--gold);"></span>ChapterLink milestones</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--purple);"></span>Regional conference</div>
+        <div class="legend-item"><span class="legend-dot" style="background:var(--blue);"></span>Quarterly leadership meeting</div>
       </div>
     </section>
 
     <!-- HANDOVER -->
     <section class="view" id="view-handover">
       <div class="view-head">
-        <h2>Leadership Handover Template</h2>
-        <p>What outgoing officers fill out before graduating — so the next leader doesn't start at zero.</p>
+        <div>
+          <h2>Leadership Handover Template</h2>
+          <p>What outgoing officers fill out before graduating — so the next leader doesn't start at zero.</p>
+        </div>
       </div>
       <div class="handover-layout">
         <div class="toc">
@@ -517,8 +826,10 @@
     <!-- TRAINING -->
     <section class="view" id="view-training">
       <div class="view-head">
-        <h2>Leadership Training</h2>
-        <p>Monthly sessions for incoming and current chapter officers.</p>
+        <div>
+          <h2>Leadership Training</h2>
+          <p>Monthly sessions for incoming and current chapter officers.</p>
+        </div>
       </div>
       <div class="training-grid">
         <div class="training-card">
@@ -545,8 +856,10 @@
     <!-- CONTACTS -->
     <section class="view" id="view-contacts">
       <div class="view-head">
-        <h2>Find a Contact</h2>
-        <p>A named person for your chapter — not a general inbox.</p>
+        <div>
+          <h2>Find a Contact</h2>
+          <p>A named person for your chapter — not a general inbox.</p>
+        </div>
       </div>
 
       <div class="contact-tabs">
@@ -564,12 +877,12 @@
           </div>
           <div class="contact-row">
             <div class="contact-avatar">DT</div>
-            <div class="info"><b>David Torres</b><span>Programming &amp; Partnerships</span></div>
+            <div class="info"><b>David Torres</b><span>Regional Support Lead, Midwest</span></div>
             <span class="topic">Joint Events</span>
           </div>
           <div class="contact-row">
             <div class="contact-avatar">RA</div>
-            <div class="info"><b>Renee Adeyemi</b><span>Leadership Development</span></div>
+            <div class="info"><b>Renee Adeyemi</b><span>Regional Support Lead, Southwest</span></div>
             <span class="topic">Training &amp; Handover</span>
           </div>
           <div class="contact-row">
@@ -631,7 +944,342 @@
   </main>
 </div>
 
+<!-- SUBMIT A SOLUTION MODAL -->
+<div class="modal-backdrop" id="solutionModalBackdrop">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>Submit a Solution</h3>
+      <button class="modal-close" data-close-modal="solutionModalBackdrop" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="solutionForm">
+      <div class="modal-body">
+        <div class="form-block">
+          <label>Title</label>
+          <input type="text" id="solTitle" placeholder="e.g. Cutting no-shows at general body meetings" required>
+        </div>
+        <div class="form-block">
+          <label>Category</label>
+          <select id="solCategory">
+            <option value="programming">Programming</option>
+            <option value="chartering">Chartering</option>
+            <option value="funding">Funding</option>
+            <option value="handover">Handover</option>
+          </select>
+        </div>
+        <div class="form-block" style="margin-bottom:0;">
+          <label>What worked</label>
+          <div class="hint">A few sentences another chapter could act on.</div>
+          <textarea id="solDescription" placeholder="Describe the problem and what your chapter did about it..." required></textarea>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close-modal="solutionModalBackdrop">Cancel</button>
+        <button type="submit" class="btn btn-gold">Submit Solution</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- EDIT CHAPTER INFO MODAL (chapter-wide, not personal) -->
+<div class="modal-backdrop" id="chapterEditModalBackdrop">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>Edit Chapter Info</h3>
+      <button class="modal-close" data-close-modal="chapterEditModalBackdrop" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="chapterEditForm">
+      <div class="modal-body">
+        <div class="form-block">
+          <label>President's name</label>
+          <input type="text" id="setPresident" placeholder="e.g. Jordan Blake">
+        </div>
+        <div class="form-block">
+          <label>Meeting day &amp; location</label>
+          <input type="text" id="setMeeting" placeholder="e.g. Thursdays, 6:00 PM · Room 214, Student Union">
+        </div>
+        <div class="form-row">
+          <div class="form-block">
+            <label>LinkedIn</label>
+            <input type="text" id="setLinkedin" placeholder="linkedin.com/company/...">
+          </div>
+          <div class="form-block">
+            <label>Instagram</label>
+            <input type="text" id="setInstagram" placeholder="@handle">
+          </div>
+        </div>
+        <div class="form-row" style="margin-bottom:0;">
+          <div class="form-block" style="margin-bottom:0;">
+            <label>X</label>
+            <input type="text" id="setX" placeholder="@handle">
+          </div>
+          <div class="form-block" style="margin-bottom:0;">
+            <label>GroupMe</label>
+            <input type="text" id="setGroupme" placeholder="groupme.com/join/...">
+          </div>
+        </div>
+      </div>
+      <div class="modal-foot">
+        <button type="button" class="btn btn-ghost" data-close-modal="chapterEditModalBackdrop">Cancel</button>
+        <button type="submit" class="btn btn-gold">Save Chapter Info</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<!-- ACCOUNT SETTINGS MODAL (personal — email, password, log out) -->
+<div class="modal-backdrop" id="settingsModalBackdrop">
+  <div class="modal-panel">
+    <div class="modal-head">
+      <h3>Account Settings</h3>
+      <button class="modal-close" data-close-modal="settingsModalBackdrop" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <form id="settingsForm">
+      <div class="modal-body">
+        <div class="form-block">
+          <label>Full name</label>
+          <input type="text" id="acctName" placeholder="e.g. Jordan Blake">
+        </div>
+        <div class="form-block">
+          <label>Login email</label>
+          <input type="email" id="acctEmail" placeholder="jordan.blake@clarkstate.edu">
+        </div>
+        <div class="form-row">
+          <div class="form-block">
+            <label>New password</label>
+            <input type="password" id="acctPassword" placeholder="Leave blank to keep current">
+          </div>
+          <div class="form-block">
+            <label>Confirm new password</label>
+            <input type="password" id="acctPasswordConfirm" placeholder="Repeat new password">
+          </div>
+        </div>
+        <div class="form-block" style="margin-bottom:0;">
+          <label>Email me about</label>
+          <div class="checkbox-row"><input type="checkbox" id="notifyRegional" checked><label for="notifyRegional" style="margin:0;font-weight:400;">Regional announcements</label></div>
+          <div class="checkbox-row"><input type="checkbox" id="notifyHandover" checked><label for="notifyHandover" style="margin:0;font-weight:400;">Handover deadlines</label></div>
+          <div class="checkbox-row"><input type="checkbox" id="notifyQuarterly"><label for="notifyQuarterly" style="margin:0;font-weight:400;">Quarterly meeting reminders</label></div>
+        </div>
+      </div>
+      <div class="modal-foot" style="justify-content:space-between;">
+        <button type="button" class="btn btn-ghost" id="logoutFromSettingsBtn">Log Out</button>
+        <div style="display:flex;gap:10px;">
+          <button type="button" class="btn btn-ghost" data-close-modal="settingsModalBackdrop">Cancel</button>
+          <button type="submit" class="btn btn-gold">Save Changes</button>
+        </div>
+      </div>
+    </form>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<!-- LOGIN OVERLAY -->
+<div class="login-overlay" id="loginOverlay">
+  <div class="login-panel">
+    <div class="brand"><span class="brand-mark"></span>ChapterLink</div>
+    <h3>Log back in</h3>
+    <div class="sub">You've been logged out of Clark State's ChapterLink.</div>
+    <form id="loginForm">
+      <div class="form-block">
+        <label>Email</label>
+        <input type="email" id="loginEmail" placeholder="jordan.blake@clarkstate.edu" required>
+      </div>
+      <div class="form-block" style="margin-bottom:0;">
+        <label>Password</label>
+        <input type="password" id="loginPassword" placeholder="••••••••" required>
+      </div>
+      <button type="submit" class="btn btn-gold">Log In</button>
+    </form>
+    <div class="login-note">This is a front-end demo — any email and password logs you back in.</div>
+  </div>
+</div>
+
 <script>
+  /* ============ REGION DATA MODEL ============
+     Every region-driven feature (Regional Hub cards, calendar filter,
+     and the auto-generated welcome email) reads from this one object,
+     so updating a date or handle here updates it everywhere. */
+  const REGIONS = {
+    southeast: {
+      label: 'Southeast', dot: 'var(--teal)', chapterCount: 23,
+      namedChapters: ['Howard University', 'Clark Atlanta University', 'Xavier University', 'Clark State University'],
+      lead: { name: 'Maya Johnson', initials: 'MJ', role: 'Regional Support Lead' },
+      social: {
+        linkedin: 'linkedin.com/company/nobcche-southeast',
+        instagram: '@nobcche_southeast',
+        x: '@nobcche_se',
+        groupme: 'groupme.com/join/nobcche-se'
+      },
+      mailingDesc: 'Southeast announcements, sponsor leads, and joint-event invites — about twice a month.',
+      conference: { name: 'Southeast Regional Conference', dates: 'March 12–14, 2027', location: 'Atlanta, GA', theme: 'Building Bridges Across Chapters' },
+      quarterly: { next: 'October 9, 2026', format: 'Hosted by Clark Atlanta University · hybrid' }
+    },
+    midwest: {
+      label: 'Midwest', dot: 'var(--gold)', chapterCount: 16,
+      namedChapters: ['Prairie View A&M', 'Morgan State University'],
+      lead: { name: 'David Torres', initials: 'DT', role: 'Regional Support Lead' },
+      social: {
+        linkedin: 'linkedin.com/company/nobcche-midwest',
+        instagram: '@nobcche_midwest',
+        x: '@nobcche_mw',
+        groupme: 'groupme.com/join/nobcche-mw'
+      },
+      mailingDesc: 'Midwest funding opportunities, chartering updates, and regional conference planning.',
+      conference: { name: 'Midwest Regional Conference', dates: 'October 17–18, 2026', location: 'St. Louis, MO', theme: 'Scaling Small Chapters' },
+      quarterly: { next: 'October 24, 2026', format: 'Hosted by Morgan State University · virtual' }
+    },
+    northeast: {
+      label: 'Northeast', dot: 'var(--rust)', chapterCount: 22,
+      namedChapters: [],
+      lead: { name: 'Regional Support Lead', initials: 'NE', role: 'To be assigned' },
+      social: {
+        linkedin: 'linkedin.com/company/nobcche-northeast',
+        instagram: '@nobcche_northeast',
+        x: '@nobcche_ne',
+        groupme: 'groupme.com/join/nobcche-ne'
+      },
+      mailingDesc: 'Northeast announcements, sponsor leads, and joint-event invites — about twice a month.',
+      conference: { name: 'Northeast Regional Conference', dates: 'February 20–22, 2027', location: 'Philadelphia, PA', theme: 'To be announced' },
+      quarterly: { next: 'October 3, 2026', format: 'Location to be announced · virtual' }
+    },
+    southwest: {
+      label: 'Southwest', dot: 'var(--purple)', chapterCount: 9,
+      namedChapters: ['Florida A&M University'],
+      lead: { name: 'Renee Adeyemi', initials: 'RA', role: 'Regional Support Lead' },
+      social: {
+        linkedin: 'linkedin.com/company/nobcche-southwest',
+        instagram: '@nobcche_southwest',
+        x: '@nobcche_sw',
+        groupme: 'groupme.com/join/nobcche-sw'
+      },
+      mailingDesc: 'Southwest new-chapter resources, chartering support, and quarterly meeting reminders.',
+      conference: { name: 'Southwest Regional Conference', dates: 'April 9–11, 2027', location: 'Tallahassee, FL', theme: 'Chartering the Next Chapter' },
+      quarterly: { next: 'October 30, 2026', format: 'Hosted by Florida A&M University · in person' }
+    },
+    west: {
+      label: 'West', dot: 'var(--slate)', chapterCount: 4,
+      namedChapters: [],
+      lead: { name: 'Regional Support Lead', initials: 'W', role: 'To be assigned' },
+      social: {
+        linkedin: 'linkedin.com/company/nobcche-west',
+        instagram: '@nobcche_west',
+        x: '@nobcche_w',
+        groupme: 'groupme.com/join/nobcche-w'
+      },
+      mailingDesc: 'West region announcements, sponsor leads, and joint-event invites — about twice a month.',
+      conference: { name: 'West Regional Conference', dates: 'May 14–16, 2027', location: 'Los Angeles, CA', theme: 'To be announced' },
+      quarterly: { next: 'October 11, 2026', format: 'Location to be announced · virtual' }
+    }
+  };
+
+  function socialIcon(type){
+    const icons = {
+      linkedin: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="9" width="4" height="12"/><circle cx="5" cy="4" r="2"/><path d="M10 9v12M10 13a4 4 0 0 1 8 0v8"/></svg>',
+      instagram: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="18" height="18" rx="5"/><circle cx="12" cy="12" r="4"/><circle cx="17.5" cy="6.5" r="1"/></svg>',
+      x: '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>',
+      groupme: '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg>'
+    };
+    return icons[type];
+  }
+
+  function chaptersLine(r){
+    if(r.namedChapters.length === 0){
+      return `<b>${r.chapterCount}</b> chapters in the region`;
+    }
+    const remainder = r.chapterCount - r.namedChapters.length;
+    const named = r.namedChapters.join(', ');
+    return `<b>${r.chapterCount}</b> chapters · ${named}${remainder > 0 ? `, and ${remainder} more` : ''}`;
+  }
+
+  function renderRegionPanel(key){
+    const r = REGIONS[key];
+    return `
+      <div class="region-panel ${key === 'southeast' ? 'active' : ''}" id="region-${key}" data-region-panel="${key}">
+        <div class="region-lead-banner">
+          <div class="who">
+            <div class="contact-avatar" style="background:${r.dot};">${r.lead.initials}</div>
+            <div>
+              <div class="contact-name">${r.lead.name}</div>
+              <div class="contact-role">${r.lead.role}, ${r.label}</div>
+            </div>
+          </div>
+          <div class="chapters">${chaptersLine(r)}</div>
+        </div>
+
+        <div class="region-grid">
+          <div class="region-card">
+            <h4>Official Social Media</h4>
+            <div class="sub">Follow and share these — not personal chapter accounts.</div>
+            <div class="social-list">
+              <div class="social-row"><div class="social-icon li">${socialIcon('linkedin')}</div><div><div class="plat">LinkedIn</div><div class="handle">${r.social.linkedin}</div></div></div>
+              <div class="social-row"><div class="social-icon ig">${socialIcon('instagram')}</div><div><div class="plat">Instagram</div><div class="handle">${r.social.instagram}</div></div></div>
+              <div class="social-row"><div class="social-icon x">${socialIcon('x')}</div><div><div class="plat">X</div><div class="handle">${r.social.x}</div></div></div>
+              <div class="social-row"><div class="social-icon gm">${socialIcon('groupme')}</div><div><div class="plat">GroupMe</div><div class="handle">${r.social.groupme}</div></div></div>
+            </div>
+          </div>
+
+          <div class="region-card">
+            <h4>Mailing List</h4>
+            <div class="sub">${r.mailingDesc}</div>
+            <form class="mailing-form" data-region="${key}">
+              <input type="email" placeholder="you@school.edu" required>
+              <button type="submit" class="btn btn-teal">Subscribe</button>
+            </form>
+            <div class="mailing-confirm"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 6L9 17l-5-5"/></svg>Subscribed to ${r.label} announcements.</div>
+          </div>
+
+          <div class="region-card span-2 accent-purple">
+            <h4>Annual Regional Conference</h4>
+            <div class="sub">${r.conference.theme}</div>
+            <div class="conf-meta">
+              <div><div class="k">Conference</div><div class="v">${r.conference.name}</div></div>
+              <div><div class="k">Dates</div><div class="v">${r.conference.dates}</div></div>
+              <div><div class="k">Location</div><div class="v">${r.conference.location}</div></div>
+            </div>
+            <button class="btn btn-ghost">+ Add to Calendar</button>
+          </div>
+
+          <div class="region-card span-2 accent-blue">
+            <h4>Quarterly Leadership Meeting</h4>
+            <p class="quarterly-note">A standing space for ${r.label} chapter officers to build fellowship with each other and work through new-chapter registration hurdles together, before they turn into a KB post.</p>
+            <div class="conf-meta">
+              <div><div class="k">Next Session</div><div class="v">${r.quarterly.next}</div></div>
+              <div><div class="k">Format</div><div class="v">${r.quarterly.format}</div></div>
+            </div>
+            <button class="btn btn-ghost">Register to Attend</button>
+          </div>
+        </div>
+      </div>`;
+  }
+
+  document.getElementById('regionPanels').innerHTML = Object.keys(REGIONS).map(renderRegionPanel).join('');
+
+  // Region tabs (Regional Hub)
+  document.querySelectorAll('.region-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.region-tab').forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      document.querySelectorAll('.region-panel').forEach(p => p.classList.remove('active'));
+      document.getElementById('region-' + tab.dataset.region).classList.add('active');
+    });
+  });
+
+  // Mailing list fake-subscribe (no backend — front-end confirmation only)
+  document.getElementById('regionPanels').addEventListener('submit', (e) => {
+    if(!e.target.classList.contains('mailing-form')) return;
+    e.preventDefault();
+    const confirmEl = e.target.parentElement.querySelector('.mailing-confirm');
+    confirmEl.classList.add('show');
+    e.target.querySelector('input').value = '';
+  });
+
+  // ============ NAV ============
   const navItems = document.querySelectorAll('.nav-item');
   const views = document.querySelectorAll('.view');
   const topbarLabel = document.getElementById('topbarLabel');
@@ -641,60 +1289,76 @@
   const sidebarClose = document.getElementById('sidebarClose');
   const labels = {
     dashboard: 'Dashboard',
+    mychapter: 'My Chapter',
+    regional: 'Regional Hub',
     kb: 'Knowledge Base',
+    registration: 'Member Registration',
     calendar: 'Cross-Chapter Calendar',
     handover: 'Handover Templates',
     training: 'Leadership Training',
     contacts: 'Find a Contact'
   };
 
-  function openSidebar(){
-    sidebar.classList.add('open');
-    sidebarBackdrop.classList.add('open');
-  }
-  function closeSidebar(){
-    sidebar.classList.remove('open');
-    sidebarBackdrop.classList.remove('open');
-  }
+  function openSidebar(){ sidebar.classList.add('open'); sidebarBackdrop.classList.add('open'); }
+  function closeSidebar(){ sidebar.classList.remove('open'); sidebarBackdrop.classList.remove('open'); }
   menuToggle.addEventListener('click', openSidebar);
   sidebarClose.addEventListener('click', closeSidebar);
   sidebarBackdrop.addEventListener('click', closeSidebar);
 
+  function switchView(viewKey){
+    navItems.forEach(i => i.classList.remove('active'));
+    const matchingNav = document.querySelector('.nav-item[data-view="' + viewKey + '"]');
+    if(matchingNav) matchingNav.classList.add('active');
+    views.forEach(v => v.classList.remove('active'));
+    const target = document.getElementById('view-' + viewKey);
+    if(target) target.classList.add('active');
+    topbarLabel.textContent = labels[viewKey] || '';
+    closeSidebar();
+    document.querySelector('.main').scrollTo(0,0);
+  }
+
   navItems.forEach(item => {
-    item.addEventListener('click', () => {
-      navItems.forEach(i => i.classList.remove('active'));
-      item.classList.add('active');
-      views.forEach(v => v.classList.remove('active'));
-      const target = document.getElementById('view-' + item.dataset.view);
-      if(target) target.classList.add('active');
-      topbarLabel.textContent = labels[item.dataset.view];
-      closeSidebar();
-      document.querySelector('.main').scrollTo(0,0);
-    });
+    item.addEventListener('click', () => switchView(item.dataset.view));
   });
 
-  // Knowledge base search
+  // Clicking the chapter chip in the sidebar footer jumps straight to My Chapter
+  document.getElementById('chapterChipBtn').addEventListener('click', () => switchView('mychapter'));
+
+  // ============ KNOWLEDGE BASE SEARCH ============
   const kbSearchInput = document.getElementById('kbSearchInput');
-  const kbCards = document.querySelectorAll('.kb-card');
   function applyKbFilters(){
     const query = kbSearchInput.value.toLowerCase().trim();
     const activeFilter = document.querySelector('.filter-chip.active').dataset.filter;
-    kbCards.forEach(card => {
+    document.querySelectorAll('#kbGrid .kb-card').forEach(card => {
       const matchesText = !query || card.dataset.text.includes(query) || card.querySelector('h5').textContent.toLowerCase().includes(query);
       const matchesFilter = activeFilter === 'all' || card.dataset.cat === activeFilter;
       card.classList.toggle('hidden', !(matchesText && matchesFilter));
     });
   }
   kbSearchInput.addEventListener('input', applyKbFilters);
-  document.querySelectorAll('.filter-chip').forEach(chip => {
+  document.querySelectorAll('.filter-row .filter-chip').forEach(chip => {
     chip.addEventListener('click', () => {
-      document.querySelectorAll('.filter-chip').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.filter-row .filter-chip').forEach(c => c.classList.remove('active'));
       chip.classList.add('active');
       applyKbFilters();
     });
   });
 
-  // Contacts tabs
+  // ============ CALENDAR REGION FILTER ============
+  document.querySelectorAll('#calRegionFilter .region-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      document.querySelectorAll('#calRegionFilter .region-chip').forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const region = chip.dataset.region;
+      document.querySelectorAll('#calGrid .cal-event').forEach(ev => {
+        const evRegion = ev.dataset.region;
+        const show = region === 'all' || evRegion === 'all' || evRegion === region;
+        ev.classList.toggle('region-hidden', !show);
+      });
+    });
+  });
+
+  // ============ CONTACTS TABS ============
   document.querySelectorAll('.contact-tab').forEach(tab => {
     tab.addEventListener('click', () => {
       document.querySelectorAll('.contact-tab').forEach(t => t.classList.remove('active'));
@@ -704,7 +1368,7 @@
     });
   });
 
-  // Handover TOC (visual only)
+  // ============ HANDOVER TOC (visual only) ============
   document.querySelectorAll('.toc-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('.toc-item').forEach(i => i.classList.remove('active'));
@@ -712,7 +1376,300 @@
     });
   });
 
-  // Close drawer automatically if resized back to desktop width
+  // ============ MY CHAPTER (Clark State) DATA MODEL ============
+  const MY_CHAPTER = {
+    name: 'Clark State University Chapter',
+    school: 'Clark State University',
+    regionKey: 'southeast',
+    founded: 2019,
+    president: 'You',
+    meeting: 'Thursdays, 6:00 PM · Room 214, Student Union',
+    social: {
+      linkedin: 'linkedin.com/company/nobcche-clarkstate',
+      instagram: '@nobcche_clarkstate',
+      x: '@nobcche_cs',
+      groupme: 'groupme.com/join/nobcche-clarkstate'
+    },
+    eboard: [
+      { name: 'You', role: 'President', initials: 'YOU' },
+      { name: 'Jordan Ellis', role: 'Vice President', initials: 'JE' },
+      { name: 'Priya Anand', role: 'Treasurer', initials: 'PA' },
+      { name: 'Marcus Webb', role: 'Secretary', initials: 'MW' },
+      { name: 'Dana Reyes', role: 'VP of Programming', initials: 'DR' },
+      { name: 'Sam Okoye', role: 'VP of Membership', initials: 'SO' }
+    ]
+  };
+  const CHAPTER_KB_SUBMISSIONS = []; // solutions submitted from this session
+
+  // ============ TOAST ============
+  let toastTimer = null;
+  function showToast(message){
+    const toast = document.getElementById('toast');
+    toast.textContent = message;
+    toast.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
+  }
+
+  // ============ MODALS ============
+  function openModal(id){ document.getElementById(id).classList.add('open'); }
+  function closeModalEl(id){ document.getElementById(id).classList.remove('open'); }
+  document.querySelectorAll('[data-close-modal]').forEach(btn => {
+    btn.addEventListener('click', () => closeModalEl(btn.dataset.closeModal));
+  });
+  document.querySelectorAll('.modal-backdrop').forEach(backdrop => {
+    backdrop.addEventListener('click', (e) => { if(e.target === backdrop) backdrop.classList.remove('open'); });
+  });
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape') document.querySelectorAll('.modal-backdrop.open').forEach(b => b.classList.remove('open'));
+  });
+
+  // ============ RENDER: MY CHAPTER PAGE ============
+  function renderMyChapter(){
+    document.getElementById('cbAvatar').textContent = MY_CHAPTER.name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('cbName').textContent = MY_CHAPTER.name;
+    document.getElementById('cbMeta').textContent = `${REGIONS[MY_CHAPTER.regionKey].label} Region · Founded ${MY_CHAPTER.founded} · President: ${MY_CHAPTER.president}`;
+    document.getElementById('cbMeeting').textContent = MY_CHAPTER.meeting;
+
+    document.getElementById('cbSocialList').innerHTML = `
+      <div class="social-row"><div class="social-icon li">${socialIcon('linkedin')}</div><div><div class="plat">LinkedIn</div><div class="handle">${MY_CHAPTER.social.linkedin}</div></div></div>
+      <div class="social-row"><div class="social-icon ig">${socialIcon('instagram')}</div><div><div class="plat">Instagram</div><div class="handle">${MY_CHAPTER.social.instagram}</div></div></div>
+      <div class="social-row"><div class="social-icon x">${socialIcon('x')}</div><div><div class="plat">X</div><div class="handle">${MY_CHAPTER.social.x}</div></div></div>
+      <div class="social-row"><div class="social-icon gm">${socialIcon('groupme')}</div><div><div class="plat">GroupMe</div><div class="handle">${MY_CHAPTER.social.groupme}</div></div></div>`;
+
+    document.getElementById('cbEboardGrid').innerHTML = MY_CHAPTER.eboard.map(m => `
+      <div class="eboard-card">
+        <div class="eboard-avatar">${m.initials}</div>
+        <div><b>${m.name}</b><span>${m.role}</span></div>
+      </div>`).join('');
+
+    const kbListEl = document.getElementById('cbKbList');
+    if(CHAPTER_KB_SUBMISSIONS.length === 0){
+      kbListEl.innerHTML = `<div class="chapter-kb-empty">No solutions submitted yet — use "Submit a Solution" to add your first one.</div>`;
+    } else {
+      kbListEl.innerHTML = CHAPTER_KB_SUBMISSIONS.map(s => `
+        <div class="kb-card">
+          <span class="kb-tag">${s.categoryLabel}</span>
+          <h5>${s.title}</h5>
+          <p>${s.description}</p>
+          <div class="kb-meta">Clark State University Chapter · Submitted ${s.date}</div>
+        </div>`).join('');
+    }
+  }
+  renderMyChapter();
+
+  document.getElementById('myChapterSettingsBtn').addEventListener('click', () => openChapterEditModal());
+
+  // ============ EDIT CHAPTER INFO MODAL (chapter-wide) ============
+  function openChapterEditModal(){
+    document.getElementById('setPresident').value = MY_CHAPTER.president === 'You' ? '' : MY_CHAPTER.president;
+    document.getElementById('setMeeting').value = MY_CHAPTER.meeting;
+    document.getElementById('setLinkedin').value = MY_CHAPTER.social.linkedin;
+    document.getElementById('setInstagram').value = MY_CHAPTER.social.instagram;
+    document.getElementById('setX').value = MY_CHAPTER.social.x;
+    document.getElementById('setGroupme').value = MY_CHAPTER.social.groupme;
+    openModal('chapterEditModalBackdrop');
+  }
+
+  document.getElementById('chapterEditForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const presidentName = document.getElementById('setPresident').value.trim();
+    if(presidentName){
+      MY_CHAPTER.president = presidentName;
+      MY_CHAPTER.eboard[0].name = presidentName;
+      MY_CHAPTER.eboard[0].initials = presidentName.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    }
+    const meeting = document.getElementById('setMeeting').value.trim();
+    if(meeting) MY_CHAPTER.meeting = meeting;
+    const li = document.getElementById('setLinkedin').value.trim();
+    const ig = document.getElementById('setInstagram').value.trim();
+    const x = document.getElementById('setX').value.trim();
+    const gm = document.getElementById('setGroupme').value.trim();
+    if(li) MY_CHAPTER.social.linkedin = li;
+    if(ig) MY_CHAPTER.social.instagram = ig;
+    if(x) MY_CHAPTER.social.x = x;
+    if(gm) MY_CHAPTER.social.groupme = gm;
+
+    renderMyChapter();
+    document.getElementById('chapterChipName').textContent = 'Clark State Chapter';
+    closeModalEl('chapterEditModalBackdrop');
+    showToast('Chapter info saved.');
+  });
+
+  // ============ ACCOUNT (the logged-in person, not the chapter) ============
+  const ACCOUNT = {
+    name: 'Jordan Blake',
+    email: 'jordan.blake@clarkstate.edu',
+    notify: { regional: true, handover: true, quarterly: false }
+  };
+
+  function renderAccountChip(){
+    const initials = ACCOUNT.name.split(' ').map(w => w[0]).slice(0,2).join('').toUpperCase();
+    document.getElementById('accountAvatar').textContent = initials;
+    document.getElementById('accountChipName').textContent = ACCOUNT.name;
+  }
+  renderAccountChip();
+
+  function openAccountSettingsModal(){
+    document.getElementById('acctName').value = ACCOUNT.name;
+    document.getElementById('acctEmail').value = ACCOUNT.email;
+    document.getElementById('acctPassword').value = '';
+    document.getElementById('acctPasswordConfirm').value = '';
+    document.getElementById('notifyRegional').checked = ACCOUNT.notify.regional;
+    document.getElementById('notifyHandover').checked = ACCOUNT.notify.handover;
+    document.getElementById('notifyQuarterly').checked = ACCOUNT.notify.quarterly;
+    openModal('settingsModalBackdrop');
+  }
+  document.getElementById('chapterSettingsBtn').addEventListener('click', openAccountSettingsModal);
+  document.getElementById('accountChipBtn').addEventListener('click', openAccountSettingsModal);
+
+  document.getElementById('settingsForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const pw = document.getElementById('acctPassword').value;
+    const pwConfirm = document.getElementById('acctPasswordConfirm').value;
+    if(pw || pwConfirm){
+      if(pw !== pwConfirm){
+        showToast("Passwords don't match — try again.");
+        return;
+      }
+    }
+    const name = document.getElementById('acctName').value.trim();
+    const email = document.getElementById('acctEmail').value.trim();
+    if(name) ACCOUNT.name = name;
+    if(email) ACCOUNT.email = email;
+    ACCOUNT.notify.regional = document.getElementById('notifyRegional').checked;
+    ACCOUNT.notify.handover = document.getElementById('notifyHandover').checked;
+    ACCOUNT.notify.quarterly = document.getElementById('notifyQuarterly').checked;
+
+    renderAccountChip();
+    closeModalEl('settingsModalBackdrop');
+    showToast(pw ? 'Account settings saved, password updated.' : 'Account settings saved.');
+  });
+
+  // ============ LOGIN / LOGOUT ============
+  const loginOverlay = document.getElementById('loginOverlay');
+
+  function logout(){
+    document.querySelectorAll('.modal-backdrop.open').forEach(b => b.classList.remove('open'));
+    document.getElementById('loginPassword').value = '';
+    loginOverlay.classList.add('open');
+  }
+  document.getElementById('logoutBtn').addEventListener('click', logout);
+  document.getElementById('logoutFromSettingsBtn').addEventListener('click', logout);
+
+  document.getElementById('loginForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const enteredEmail = document.getElementById('loginEmail').value.trim();
+    if(enteredEmail) ACCOUNT.email = enteredEmail;
+    renderAccountChip();
+    loginOverlay.classList.remove('open');
+    showToast(`Welcome back, ${ACCOUNT.name.split(' ')[0]}.`);
+  });
+
+  // ============ SUBMIT A SOLUTION MODAL ============
+  document.getElementById('submitSolutionBtn').addEventListener('click', () => openModal('solutionModalBackdrop'));
+
+  const CATEGORY_LABELS = { programming: 'Programming', chartering: 'Chartering', funding: 'Funding', handover: 'Handover' };
+
+  document.getElementById('solutionForm').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const title = document.getElementById('solTitle').value.trim();
+    const category = document.getElementById('solCategory').value;
+    const description = document.getElementById('solDescription').value.trim();
+    if(!title || !description) return;
+
+    const dateStr = new Date().toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+    const card = document.createElement('div');
+    card.className = 'kb-card';
+    card.dataset.cat = category;
+    card.dataset.chapter = 'clarkstate';
+    card.dataset.text = (title + ' ' + description).toLowerCase();
+    card.innerHTML = `
+      <span class="kb-tag">${CATEGORY_LABELS[category]}</span>
+      <h5>${title}</h5>
+      <p>${description}</p>
+      <div class="kb-meta">Clark State University Chapter · Submitted ${dateStr}</div>`;
+    document.getElementById('kbGrid').prepend(card);
+    applyKbFilters();
+
+    CHAPTER_KB_SUBMISSIONS.unshift({ title, description, categoryLabel: CATEGORY_LABELS[category], date: dateStr });
+    renderMyChapter();
+
+    e.target.reset();
+    closeModalEl('solutionModalBackdrop');
+    showToast('Solution submitted to the Knowledge Base.');
+  });
+
+  // ============ MEMBER REGISTRATION -> AUTO WELCOME EMAIL ============
+  const regForm = document.getElementById('regForm');
+  const emailPreview = document.getElementById('emailPreview');
+  const epSubject = document.getElementById('epSubject');
+  const epTo = document.getElementById('epTo');
+  const epBody = document.getElementById('epBody');
+  const epFooter = document.getElementById('epFooter');
+  const regRoleSelect = document.getElementById('regRole');
+  const eboardPositionField = document.getElementById('eboardPositionField');
+
+  regRoleSelect.addEventListener('change', () => {
+    eboardPositionField.classList.toggle('show', regRoleSelect.value === 'E-board Member');
+  });
+
+  function roleParagraph(role, position){
+    const r = REGIONS[MY_CHAPTER.regionKey];
+    if(role === 'Chapter President'){
+      return `As chapter president, you also have access to Chapter Settings (to keep Clark State's socials and meeting info current) and the Leadership Handover template for when your term ends. Your regional support lead, ${r.lead.name}, is your direct line for anything region-level.`;
+    }
+    if(role === 'E-board Member'){
+      const posLine = position ? ` as ${position}` : '';
+      return `As an e-board member${posLine}, check the Handover Templates page for what your predecessor left behind, and save the date for the Quarterly Leadership Meeting below — it's built for officers working through exactly this kind of thing together.`;
+    }
+    return `Keep an eye on the Knowledge Base for solutions other chapters have already worked out, and the Cross-Chapter Calendar for what's coming up.`;
+  }
+
+  regForm.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const name = document.getElementById('regName').value.trim() || 'there';
+    const email = document.getElementById('regEmail').value.trim();
+    const type = document.getElementById('regType').value;
+    const role = regRoleSelect.value;
+    const eboardPosition = document.getElementById('regEboardPosition').value.trim();
+    const r = REGIONS[MY_CHAPTER.regionKey];
+    const firstName = name.split(' ')[0];
+    const verb = type === 'Renewing Member' ? 'renewing your membership with' : 'joining';
+
+    epSubject.textContent = `Welcome to Clark State, ${firstName}!`;
+    epTo.textContent = email ? `To: ${email}` : 'To: (enter an email above to preview the "To" line)';
+    const accountLink = `https://chapterlink.app/join?email=${encodeURIComponent(email || 'you@school.edu')}&chapter=clark-state`;
+    epBody.textContent =
+`Hi ${firstName},
+
+Thanks for ${verb} the Clark State University Chapter — you're now part of the ${r.label} region of NOBCChE ChapterLink.
+
+One more step: create your ChapterLink account so you can RSVP to chapter events, see the Cross-Chapter Calendar, and get updates without waiting on email.
+ → Create your account: ${accountLink}
+This link is generated for ${email || 'the email address you entered'} — it'll pre-fill your sign-up.
+
+${roleParagraph(role, eboardPosition)}
+
+Stay in the loop:
+ • Chapter LinkedIn: ${MY_CHAPTER.social.linkedin}
+ • Chapter Instagram: ${MY_CHAPTER.social.instagram}
+ • Chapter X: ${MY_CHAPTER.social.x}
+ • Chapter GroupMe: ${MY_CHAPTER.social.groupme}
+ • Regional mailing list: subscribe from the Regional Hub for ${r.label} announcements
+
+Two dates to put on your calendar:
+ • ${r.conference.name} — ${r.conference.dates}, ${r.conference.location}
+ • Next Quarterly Leadership Meeting — ${r.quarterly.next} (${r.quarterly.format})
+
+Glad to have you with us.
+— ChapterLink, on behalf of the Clark State University Chapter`;
+
+    epFooter.textContent = email ? `Preview generated for ${email} · ${role}` : `Preview generated · ${role}`;
+    emailPreview.classList.remove('empty');
+    emailPreview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+
   window.addEventListener('resize', () => {
     if(window.innerWidth > 900) closeSidebar();
   });
