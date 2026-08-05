@@ -148,8 +148,10 @@
   }
   .filter-chip.active{background:var(--ink);color:#fff;border-color:var(--ink);}
   .kb-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
-  .kb-card{border:1px solid var(--line);border-radius:8px;padding:18px 20px;transition:box-shadow .15s;}
-  .kb-card:hover{box-shadow:0 8px 24px -12px rgba(15,31,61,0.2);}
+  .kb-card{border:1px solid var(--line);border-radius:8px;padding:18px 20px;transition:box-shadow .15s, transform .15s;cursor:pointer;}
+  .kb-card:hover{box-shadow:0 8px 24px -12px rgba(15,31,61,0.2);transform:translateY(-1px);}
+  .kb-card:focus-visible{outline:2px solid var(--gold);outline-offset:2px;}
+  .kb-read-more{font-size:12px;color:var(--teal);font-weight:600;margin-top:2px;}
   .kb-tag{display:inline-block;font-family:'IBM Plex Mono',monospace;font-size:10px;text-transform:uppercase;letter-spacing:0.05em;color:var(--teal);background:var(--teal-bg);padding:3px 8px;border-radius:3px;margin-bottom:10px;}
   .kb-card h5{font-size:15px;font-weight:600;color:var(--ink);margin-bottom:6px;}
   .kb-card p{font-size:13px;color:#7a7a7a;margin-bottom:10px;}
@@ -620,36 +622,48 @@
           <h5>Reviving stalled monthly meetings</h5>
           <p>How a 12-member chapter rebuilt attendance using co-hosted events with a neighboring chapter.</p>
           <div class="kb-meta">Chapter #114 · Submitted 2024</div>
+          <div class="kb-full-text" hidden>Attendance had dropped to 4-5 regulars by February. Rather than trying to fix it alone, the chapter reached out to a neighboring, larger chapter about co-hosting alternating meetings — one month at each school. The larger chapter's built-in draw pulled in new faces, and by the third joint meeting several of those new attendees started showing up to the smaller chapter's solo meetings too. Keys to making it work: pick a co-host chapter close enough to carpool to, agree on a rotating host schedule up front so it doesn't always fall on one chapter, and give the joint meetings a specific hook (a guest speaker, a workshop) rather than just "let's meet together." By fall, the chapter's own attendance had more than doubled.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
         <div class="kb-card" data-cat="chartering" data-text="getting school approval one semester chartering">
           <span class="kb-tag">Chartering</span>
           <h5>Getting school approval in one semester</h5>
           <p>The exact step order that avoided the usual back-and-forth with student affairs offices.</p>
           <div class="kb-meta">Chapter #203 · Submitted 2023</div>
+          <div class="kb-full-text" hidden>Most chartering delays came from submitting the constitution before confirming a faculty advisor, which triggered a rejection-and-resubmit cycle that ate a full semester. This chapter reversed the order: first, they secured a faculty advisor commitment in writing; second, they scheduled a 15-minute pre-review meeting with student affairs to walk through the constitution draft before formal submission, catching format issues early; third, they submitted the full packet (constitution, advisor letter, initial member roster of 10+) in one go. That single pre-review meeting cut their approval time from an estimated two semesters down to about six weeks. They're happy to share their constitution template on request.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
         <div class="kb-card" data-cat="funding" data-text="sponsor outreach templates funding money">
           <span class="kb-tag">Funding</span>
           <h5>Sponsor outreach templates that worked</h5>
           <p>Email and pitch deck templates that produced a 40% response rate from local companies.</p>
           <div class="kb-meta">Chapter #087 · Submitted 2025</div>
+          <div class="kb-full-text" hidden>The chapter's initial cold emails to local employers got almost no replies. What changed things was leading with a specific, small ask instead of a general sponsorship pitch: "Would you send one engineer to speak at our March meeting?" rather than "Would you like to sponsor us?" That low-commitment first ask got them in the door, and roughly a third of those contacts turned into ongoing sponsors once the relationship existed. Their pitch deck kept it to five slides: who they are, the specific ask, past turnout numbers, what the company gets (logo placement, resume book access, speaking slot), and one clear next step. They found direct outreach to a company's local diversity/outreach coordinator outperformed generic "info@" emails by a wide margin.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
         <div class="kb-card" data-cat="handover" data-text="one page transition brief handover leadership">
           <span class="kb-tag">Handover</span>
           <h5>A one-page transition brief format</h5>
           <p>What five outgoing presidents wished they'd written down before graduating.</p>
           <div class="kb-meta">Chapter #142 · Submitted 2024</div>
+          <div class="kb-full-text" hidden>Interviewing five outgoing presidents from different chapters turned up the same regret: none of them had written down the "unwritten rules" that made the year work — which room actually has AV equipment, which professor always says yes to funding requests, which vendor is reliable versus which one ghosts you in week 3. Their one-page format has four sections only: what kept the chapter running that isn't written down anywhere else, active vendor/sponsor contacts with a one-line note on each, a budget summary with rough percentages, and login credentials for shared accounts. Keeping it to one page mattered — longer handover docs from prior years were never read by incoming officers, but everyone read the one-pager.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
         <div class="kb-card" data-cat="programming" data-text="joint events partnership new chapter networking">
           <span class="kb-tag">Programming</span>
           <h5>Running a joint event with a bigger chapter</h5>
           <p>A first-year chapter's approach to co-hosting a networking night with an established one.</p>
           <div class="kb-meta">Chapter #061 · Submitted 2023</div>
+          <div class="kb-full-text" hidden>As a brand-new chapter with no event history and no sponsor relationships, this group approached a well-established chapter two hours away about co-hosting a networking night rather than trying to run one solo. The established chapter brought the sponsor contacts and a mailing list; the new chapter brought venue logistics and volunteer labor for the night of. They split costs 50/50 but agreed the new chapter's members would get slightly more one-on-one time with recruiters as the "junior partner" — a term they negotiated up front so it didn't feel unfair later. The event became an annual tradition, and the sponsor relationships the new chapter built that night carried into their own solo events the following year.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
         <div class="kb-card" data-cat="funding" data-text="budget planning small chapter low funds">
           <span class="kb-tag">Funding</span>
           <h5>Running programming on a $200 annual budget</h5>
           <p>How a newly chartered chapter prioritized spend in its first year.</p>
           <div class="kb-meta">Chapter #199 · Submitted 2025</div>
+          <div class="kb-full-text" hidden>With no sponsor relationships yet and a $200 startup allocation from the student government, this chapter spent almost nothing on food or swag in year one and put nearly the entire budget toward printing and a table reservation fee for the campus involvement fair — their single highest-ROI expense, since it drove most of their first 15 members. After that, they leaned on free campus resources: reserving rooms through student affairs rather than paying for space, asking faculty to cover their own travel for guest talks, and using potlucks instead of catered food for socials. They didn't apply for outside sponsorship until year two, once they had membership numbers and a track record of events to point to — which made those pitches land better anyway.</div>
+        <div class="kb-read-more">Read full solution →</div>
         </div>
       </div>
     </section>
@@ -1079,6 +1093,26 @@
 
 <div class="toast" id="toast"></div>
 
+<!-- KB SOLUTION DETAIL MODAL -->
+<div class="modal-backdrop" id="kbDetailModalBackdrop">
+  <div class="modal-panel" style="max-width:560px;">
+    <div class="modal-head">
+      <h3 id="kbDetailTitle">Solution title</h3>
+      <button class="modal-close" data-close-modal="kbDetailModalBackdrop" aria-label="Close">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <span class="kb-tag" id="kbDetailTag">Category</span>
+      <p id="kbDetailBody" style="font-size:14px;line-height:1.7;color:#333;margin-top:14px;white-space:pre-line;"></p>
+      <div class="kb-meta" id="kbDetailMeta" style="margin-top:16px;"></div>
+    </div>
+    <div class="modal-foot">
+      <button type="button" class="btn btn-ghost" data-close-modal="kbDetailModalBackdrop">Close</button>
+    </div>
+  </div>
+</div>
+
 <!-- LOGIN OVERLAY -->
 <div class="login-overlay" id="loginOverlay">
   <div class="login-panel">
@@ -1344,6 +1378,32 @@
     });
   });
 
+  // ============ KB CARD -> READ FULL SOLUTION ============
+  document.addEventListener('click', (e) => {
+    const card = e.target.closest('.kb-card');
+    if(!card) return;
+    const title = card.querySelector('h5') ? card.querySelector('h5').textContent : 'Solution';
+    const tag = card.querySelector('.kb-tag') ? card.querySelector('.kb-tag').textContent : '';
+    const meta = card.querySelector('.kb-meta') ? card.querySelector('.kb-meta').textContent : '';
+    const fullTextEl = card.querySelector('.kb-full-text');
+    const previewEl = card.querySelector('p');
+    const body = fullTextEl ? fullTextEl.textContent : (previewEl ? previewEl.textContent : '');
+
+    document.getElementById('kbDetailTitle').textContent = title;
+    document.getElementById('kbDetailTag').textContent = tag;
+    document.getElementById('kbDetailBody').textContent = body;
+    document.getElementById('kbDetailMeta').textContent = meta;
+    openModal('kbDetailModalBackdrop');
+  });
+  // Make cards keyboard-accessible too
+  document.querySelectorAll('#kbGrid .kb-card').forEach(card => {
+    card.setAttribute('tabindex', '0');
+    card.setAttribute('role', 'button');
+    card.addEventListener('keydown', (e) => {
+      if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); card.click(); }
+    });
+  });
+
   // ============ CALENDAR REGION FILTER ============
   document.querySelectorAll('#calRegionFilter .region-chip').forEach(chip => {
     chip.addEventListener('click', () => {
@@ -1453,6 +1513,8 @@
           <h5>${s.title}</h5>
           <p>${s.description}</p>
           <div class="kb-meta">Clark State University Chapter · Submitted ${s.date}</div>
+          <div class="kb-full-text" hidden>${s.description}</div>
+          <div class="kb-read-more">Read full solution →</div>
         </div>`).join('');
     }
   }
@@ -1588,7 +1650,9 @@
       <span class="kb-tag">${CATEGORY_LABELS[category]}</span>
       <h5>${title}</h5>
       <p>${description}</p>
-      <div class="kb-meta">Clark State University Chapter · Submitted ${dateStr}</div>`;
+      <div class="kb-meta">Clark State University Chapter · Submitted ${dateStr}</div>
+      <div class="kb-full-text" hidden>${description}</div>
+      <div class="kb-read-more">Read full solution →</div>`;
     document.getElementById('kbGrid').prepend(card);
     applyKbFilters();
 
@@ -1677,4 +1741,3 @@ Glad to have you with us.
 
 </body>
 </html>
-
